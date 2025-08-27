@@ -1,0 +1,2 @@
+namespace QQBotOfficial.Dto;
+

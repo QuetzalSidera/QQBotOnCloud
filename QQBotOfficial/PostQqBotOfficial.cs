@@ -1,7 +1,14 @@
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math.EC.Rfc8032;
+using Org.BouncyCastle.Security;
+using QQBotOfficial.Dto;
 
 namespace QQBotOfficial;
 
@@ -20,13 +27,11 @@ public class PostQqBotOfficial
 
         try
         {
-            // var json = JsonSerializer.Deserialize<JsonElement>(body);
-            // Console.WriteLine("解析后的 JSON： " + json);
+            await PostHandler(body, httpContext);
         }
         catch (Exception ex)
         {
-            Console.WriteLine("JSON 解析失败: " + ex.Message);
-            return Results.BadRequest(new { error = "JSON解析失败", message = ex.Message });
+            Console.WriteLine("POST消息解析失败: " + ex.Message);
         }
 
         // 直接返回IResult，不要手动操作Response
@@ -35,5 +40,68 @@ public class PostQqBotOfficial
             status = "success",
             message = "访问成功"
         });
+    }
+
+    public static async Task PostHandler(string body, HttpContext httpContext)
+    {
+        var response = JsonSerializer.Deserialize<EventPayload>(body);
+        if (response == null)
+            return;
+        switch (OperationCodeEnumHelper.ToOperationCodeEnum(response.OpCode))
+        {
+            case OperationCodeEnum.Dispatch:
+                await DispatchHandler(body, httpContext);
+                break;
+            case OperationCodeEnum.CallbackAak:
+                await CallbackAakHandler(body, httpContext);
+                break;
+            case OperationCodeEnum.CallbackValidation:
+                await CallbackValidationHandler(body, httpContext);
+                break;
+            default:
+                Console.WriteLine($"未知的事件类型: {response.OpCode}");
+                break;
+        }
+    }
+
+
+    public static async Task DispatchHandler(string body, HttpContext httpContext)
+    {
+    }
+
+    public static async Task CallbackAakHandler(string body, HttpContext httpContext)
+    {
+    }
+
+    /// <summary>
+    /// 回调Url验证
+    /// </summary>
+    /// <param name="body"></param>
+    /// <param name="httpContext"></param>
+    public static async Task CallbackValidationHandler(string body, HttpContext httpContext)
+    {
+        var response = JsonSerializer.Deserialize<EventPayload<CallbackValidationEvent>>(body);
+        if (response == null)
+            return;
+        string eventTs = response.Data.EventTs;
+        string plainToken = response.Data.PlainToken;
+
+        // 生成确定性密钥对
+        var (privateKey, publicKey) = Ed25519Signer.GenerateKeyPairFromSeed(Token.BotSercet);
+        // 构建签名消息
+        string message = eventTs + plainToken;
+
+        // 生成签名
+        string signature = Ed25519Signer.Sign(message, privateKey);
+
+        var result = new CallbackValidationEventRet
+        {
+            PlainToken = plainToken,
+            Signature = signature
+        };
+        var json = JsonSerializer.Serialize(result);
+        httpContext.Response.ContentType = "application/json";
+        httpContext.Response.StatusCode = 200;
+        await httpContext.Response.WriteAsync(json);
     }
 }

@@ -7,10 +7,10 @@ using QQBotOfficial;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
+        
         // 配置 Kestrel 监听 8443 端口，启用 HTTPS
         builder.WebHost.ConfigureKestrel(options =>
         {
@@ -18,13 +18,13 @@ public class Program
             {
             });
         });
-
+        
         var app = builder.Build();
-
+        
         // WebHook 接收端点 - 使用正确的ASP.NET Core方式
         app.MapPost("/qqbotofficial/api", async (HttpContext context) => await PostQqBotOfficial.PostHandler(context));
         app.MapGet("/qqbotofficial", async (HttpContext context) => await GetQqBotOfficial.GetHandler(context));
-
+        
         app.Run();
     }
 }
