@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="bin\Debug\net9.0\development.pfx" />
+      <None Include="bin\Debug\net9.0\mycert.crt" />
+      <None Include="bin\Debug\net9.0\mycert.key" />
+      <None Include="bin\Debug\net9.0\mycert.pfx" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,73 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/QQBotOfficial.csproj": {}
+  },
+  "projects": {
+    "/Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/QQBotOfficial.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/QQBotOfficial.csproj",
+        "projectName": "QQBotOfficial",
+        "projectPath": "/Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/QQBotOfficial.csproj",
+        "packagesPath": "/Users/qianshuang/.nuget/packages/",
+        "outputPath": "/Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/qianshuang/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/qianshuang/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
