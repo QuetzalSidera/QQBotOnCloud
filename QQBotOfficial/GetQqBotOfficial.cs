@@ -18,8 +18,8 @@ public static class GetQqBotOfficial
 
         try
         {
-            var json = JsonSerializer.Deserialize<JsonElement>(body);
-            Console.WriteLine("解析后的 JSON： " + json);
+            // var json = JsonSerializer.Deserialize<JsonElement>(body);
+            // Console.WriteLine("解析后的 JSON： " + json);
         }
         catch (Exception ex)
         {

@@ -16,7 +16,7 @@ public class Program
         {
             options.ListenAnyIP(8443, listenOptions =>
             {
-                // listenOptions.UseHttps("development.pfx", "Qs@81920"); // 替换成你的证书文件和密码
+                listenOptions.UseHttps("development.pfx", "Qs@81920"); // 替换成你的证书文件和密码
             });
         });
 
