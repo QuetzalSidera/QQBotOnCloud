@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Net;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
@@ -22,8 +23,8 @@ public class Program
 
         var app = builder.Build();
 // WebHook 接收端点
-        app.MapPost("/qqbotofficial/api", async (HttpContext context) => await PostQqBotOfficial.PostHandler(context));
-        app.MapGet("/qqbotofficial", async (HttpContext context) => await GetQqBotOfficial.GetHandler(context));
+        app.MapPost("/qqbotofficial/api", async (HttpListenerContext context) => await PostQqBotOfficial.PostHandler(context));
+        app.MapGet("/qqbotofficial", async (HttpListenerContext context) => await GetQqBotOfficial.GetHandler(context));
 
         app.Run();
     }
