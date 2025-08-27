@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -34,8 +35,8 @@ public class TokenManager
             string json = JsonSerializer.Serialize(new AccessTokenParam(AppId, BotSecret));
 
             Console.WriteLine(json);
-            request.Headers.Add("Content-Type", "application/json");
-            request.Content = new StringContent(json);
+            var jsonContent = new StringContent(json, Encoding.UTF8, "application/json");
+            request.Content = jsonContent; // 将带有正确头部的Content赋值给request
             var rawResponse = await HttpClientService.Client.SendAsync(request);
             Console.WriteLine(rawResponse.Content.ReadAsStringAsync().Result);
             var response = JsonSerializer.Deserialize<AccessTokenDto>(await rawResponse.Content.ReadAsStringAsync());
