@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System.Text;
+using System.Security.Cryptography.X509Certificates;
 using QQBotOfficial;
 
 public class Program
@@ -15,7 +15,9 @@ public class Program
         {
             options.ListenAnyIP(8443, listenOptions =>
             {
-                // listenOptions.UseHttps("development.pfx", "Qs@81920");
+                // listenOptions.UseHttps(GetCertificate());
+                // 使用开发证书（ASP.NET Core自动生成）
+                listenOptions.UseHttps();
             });
         });
 
