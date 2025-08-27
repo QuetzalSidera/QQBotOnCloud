@@ -44,9 +44,11 @@ public class PostQqBotOfficial
 
     public static async Task PostHandler(string body, HttpContext httpContext)
     {
+        Console.WriteLine("in PostHandler 1");
         var response = JsonSerializer.Deserialize<EventPayload>(body);
         if (response == null)
             return;
+        Console.WriteLine("in PostHandler 2");
         switch (OperationCodeEnumHelper.ToOperationCodeEnum(response.OpCode))
         {
             case OperationCodeEnum.Dispatch:
@@ -80,9 +82,11 @@ public class PostQqBotOfficial
     /// <param name="httpContext"></param>
     public static async Task CallbackValidationHandler(string body, HttpContext httpContext)
     {
+        Console.WriteLine("in CallbackValidationHandler 1");
         var response = JsonSerializer.Deserialize<EventPayload<CallbackValidationEvent>>(body);
         if (response == null)
             return;
+        Console.WriteLine("in CallbackValidationHandler 2");
         string eventTs = response.Data.EventTs;
         string plainToken = response.Data.PlainToken;
 
@@ -99,9 +103,11 @@ public class PostQqBotOfficial
             PlainToken = plainToken,
             Signature = signature
         };
+        Console.WriteLine("in CallbackValidationHandler 3");
         var json = JsonSerializer.Serialize(result);
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = 200;
+        Console.WriteLine("in CallbackValidationHandler 4");
         await httpContext.Response.WriteAsync(json);
     }
 }
