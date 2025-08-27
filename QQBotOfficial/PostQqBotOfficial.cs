@@ -91,7 +91,7 @@ public class PostQqBotOfficial
         string plainToken = response.Data.PlainToken;
 
 
-        string signature = Ed25519SignatureGenerator.GenerateSignature(
+        string signature = GoEd25519Compatible.GenerateSignature(
             plainToken: plainToken,
             botSecret: Token.BotSecret,
             eventTs: eventTs
