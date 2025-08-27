@@ -7,65 +7,38 @@ using Org.BouncyCastle.Security;
 
 namespace QQBotOfficial;
 
-public class Ed25519Signer : IDisposable
+public static class Ed25519SignatureGenerator
 {
     /// <summary>
-    /// 从种子生成ED25519密钥对
+    /// 生成ED25519签名
     /// </summary>
-    public static (byte[] privateKey, byte[] publicKey) GenerateKeyPairFromSeed(string seed)
+    /// <param name="plainToken">明文令牌</param>
+    /// <param name="botSecret">机器人密钥</param>
+    /// <param name="eventTs">事件时间戳</param>
+    /// <returns>十六进制格式的签名</returns>
+    public static string GenerateSignature(string plainToken, string botSecret, string eventTs)
     {
-        string expandedSeed = ExpandSeed(seed, 32); // Ed25519种子需要32字节
-        byte[] seedBytes = Encoding.UTF8.GetBytes(expandedSeed);
+        if (string.IsNullOrEmpty(plainToken))
+            throw new ArgumentException("PlainToken cannot be null or empty");
+        if (string.IsNullOrEmpty(botSecret))
+            throw new ArgumentException("BotSecret cannot be null or empty");
+        if (string.IsNullOrEmpty(eventTs))
+            throw new ArgumentException("EventTs cannot be null or empty");
 
-        // 使用SHA256哈希确保种子长度正确
-        using (var sha256 = SHA256.Create())
-        {
-            byte[] hashedSeed = sha256.ComputeHash(seedBytes);
-
-            // 使用确定性随机数生成器
-            var random = new FixedSecureRandom(hashedSeed);
-            var keyPairGenerator = new Ed25519KeyPairGenerator();
-            keyPairGenerator.Init(new KeyGenerationParameters(random, 255));
-
-            AsymmetricCipherKeyPair keyPair = keyPairGenerator.GenerateKeyPair();
-            Ed25519PrivateKeyParameters privateKey = (Ed25519PrivateKeyParameters)keyPair.Private;
-            Ed25519PublicKeyParameters publicKey = (Ed25519PublicKeyParameters)keyPair.Public;
-
-            return (privateKey.GetEncoded(), publicKey.GetEncoded());
-        }
-    }
-
-    /// <summary>
-    /// 从私钥字节数组创建私钥参数
-    /// </summary>
-    public static Ed25519PrivateKeyParameters CreatePrivateKey(byte[] privateKeyBytes)
-    {
-        return new Ed25519PrivateKeyParameters(privateKeyBytes, 0);
-    }
-
-    /// <summary>
-    /// 从公钥字节数组创建公钥参数
-    /// </summary>
-    public static Ed25519PublicKeyParameters CreatePublicKey(byte[] publicKeyBytes)
-    {
-        return new Ed25519PublicKeyParameters(publicKeyBytes, 0);
-    }
-
-    /// <summary>
-    /// 对消息进行签名
-    /// </summary>
-    public static byte[] Sign(byte[] message, byte[] privateKeyBytes)
-    {
         try
         {
-            Ed25519PrivateKeyParameters privateKey = CreatePrivateKey(privateKeyBytes);
+            // 1. 从botSecret生成确定性私钥
+            byte[] privateKey = GeneratePrivateKeyFromSeed(botSecret);
 
-            // 使用Ed25519Signer进行签名
-            var signer = new Org.BouncyCastle.Crypto.Signers.Ed25519Signer();
-            signer.Init(true, privateKey);
-            signer.BlockUpdate(message, 0, message.Length);
+            // 2. 构建签名消息：eventTs + plainToken
+            string message = eventTs + plainToken;
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
 
-            return signer.GenerateSignature();
+            // 3. 使用ED25519签名
+            byte[] signatureBytes = SignMessage(messageBytes, privateKey);
+
+            // 4. 返回十六进制格式的签名
+            return BytesToHex(signatureBytes);
         }
         catch (Exception ex)
         {
@@ -74,56 +47,54 @@ public class Ed25519Signer : IDisposable
     }
 
     /// <summary>
-    /// 对字符串消息进行签名并返回十六进制字符串
+    /// 从种子生成ED25519私钥
     /// </summary>
-    public static string Sign(string message, byte[] privateKeyBytes)
+    private static byte[] GeneratePrivateKeyFromSeed(string seed)
     {
-        byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-        byte[] signature = Sign(messageBytes, privateKeyBytes);
-        return BytesToHex(signature);
-    }
+        // 扩展种子到至少32字节（与Go代码行为一致）
+        string expandedSeed = ExpandSeed(seed, 32);
+        byte[] seedBytes = Encoding.UTF8.GetBytes(expandedSeed);
 
-    /// <summary>
-    /// 验证签名
-    /// </summary>
-    public static bool Verify(byte[] message, byte[] signature, byte[] publicKeyBytes)
-    {
-        try
+        // 使用SHA256哈希确保种子长度正确
+        using (var sha256 = SHA256.Create())
         {
-            Ed25519PublicKeyParameters publicKey = CreatePublicKey(publicKeyBytes);
+            byte[] hashedSeed = sha256.ComputeHash(seedBytes);
 
-            var signer = new Org.BouncyCastle.Crypto.Signers.Ed25519Signer();
-            signer.Init(false, publicKey);
-            signer.BlockUpdate(message, 0, message.Length);
+            // 使用确定性随机数生成器生成密钥对
+            var random = new FixedSecureRandom(hashedSeed);
+            var keyPairGenerator = new Ed25519KeyPairGenerator();
+            keyPairGenerator.Init(new KeyGenerationParameters(random, 255));
 
-            return signer.VerifySignature(signature);
-        }
-        catch (Exception)
-        {
-            return false;
+            AsymmetricCipherKeyPair keyPair = keyPairGenerator.GenerateKeyPair();
+            Ed25519PrivateKeyParameters privateKey = (Ed25519PrivateKeyParameters)keyPair.Private;
+
+            return privateKey.GetEncoded();
         }
     }
 
     /// <summary>
-    /// 从私钥获取公钥
+    /// 使用ED25519对消息进行签名
     /// </summary>
-    public static byte[] GetPublicKeyFromPrivate(byte[] privateKeyBytes)
+    private static byte[] SignMessage(byte[] message, byte[] privateKeyBytes)
     {
-        Ed25519PrivateKeyParameters privateKey = CreatePrivateKey(privateKeyBytes);
-        return privateKey.GeneratePublicKey().GetEncoded();
+        Ed25519PrivateKeyParameters privateKey = new Ed25519PrivateKeyParameters(privateKeyBytes, 0);
+
+        var signer = new Org.BouncyCastle.Crypto.Signers.Ed25519Signer();
+        signer.Init(true, privateKey);
+        signer.BlockUpdate(message, 0, message.Length);
+
+        return signer.GenerateSignature();
     }
 
     /// <summary>
-    /// 扩展种子到指定长度
+    /// 扩展种子到指定长度（复制Go代码逻辑）
     /// </summary>
     private static string ExpandSeed(string seed, int targetLength)
     {
-        if (string.IsNullOrEmpty(seed))
-            throw new ArgumentException("Seed cannot be null or empty");
-
         if (seed.Length >= targetLength)
             return seed.Substring(0, targetLength);
 
+        // 与Go代码相同的逻辑：重复种子直到达到目标长度
         StringBuilder expanded = new StringBuilder(seed);
         while (expanded.Length < targetLength)
         {
@@ -140,34 +111,12 @@ public class Ed25519Signer : IDisposable
     {
         return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
     }
-
-    /// <summary>
-    /// 十六进制字符串转字节数组
-    /// </summary>
-    private static byte[] HexToBytes(string hex)
-    {
-        if (hex.Length % 2 != 0)
-            throw new ArgumentException("Hex string must have even length");
-
-        byte[] bytes = new byte[hex.Length / 2];
-        for (int i = 0; i < bytes.Length; i++)
-        {
-            bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
-        }
-
-        return bytes;
-    }
-
-    public void Dispose()
-    {
-        // 清理资源
-    }
 }
 
 /// <summary>
 /// 固定种子的安全随机数生成器（用于确定性密钥生成）
 /// </summary>
-public class FixedSecureRandom : SecureRandom
+internal class FixedSecureRandom : SecureRandom
 {
     private readonly byte[] _seed;
     private int _position;
@@ -187,24 +136,5 @@ public class FixedSecureRandom : SecureRandom
 
             bytes[i] = _seed[_position++];
         }
-    }
-
-    public override void NextBytes(byte[] buf, int off, int len)
-    {
-        for (int i = 0; i < len; i++)
-        {
-            if (_position >= _seed.Length)
-                _position = 0;
-
-            buf[off + i] = _seed[_position++];
-        }
-    }
-
-    public byte NextByte()
-    {
-        if (_position >= _seed.Length)
-            _position = 0;
-
-        return _seed[_position++];
     }
 }

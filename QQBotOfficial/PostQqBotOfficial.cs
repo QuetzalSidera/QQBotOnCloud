@@ -90,13 +90,12 @@ public class PostQqBotOfficial
         string eventTs = response.Data.EventTs;
         string plainToken = response.Data.PlainToken;
 
-        // 生成确定性密钥对
-        var (privateKey, publicKey) = Ed25519Signer.GenerateKeyPairFromSeed(Token.BotSercet);
-        // 构建签名消息
-        string message = eventTs + plainToken;
 
-        // 生成签名
-        string signature = Ed25519Signer.Sign(message, privateKey);
+        string signature = Ed25519SignatureGenerator.GenerateSignature(
+            plainToken: plainToken,
+            botSecret: Token.BotSecret,
+            eventTs: eventTs
+        );
 
         var result = new CallbackValidationEventRet
         {
@@ -104,6 +103,8 @@ public class PostQqBotOfficial
             Signature = signature
         };
         Console.WriteLine("in CallbackValidationHandler 3");
+        Console.WriteLine(
+            $"BotSecret:{Token.BotSecret}, EventTs:{eventTs}, PlainToken:{plainToken}, Signature:{signature}");
         var json = JsonSerializer.Serialize(result);
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = 200;

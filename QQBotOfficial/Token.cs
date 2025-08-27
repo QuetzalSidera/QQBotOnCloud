@@ -12,7 +12,7 @@ public class Token
     public const string BotQqId = "3889831055";
     public const string AppId = "102805649";
     public const string BotToken = "YMyBoWQHB5qxoSUkjD8DndZBrHoQq3JV";
-    public const string BotSercet = "GoMvU3cBkJtT3dDnNyZAlMxYAmO0cEqS";
+    public const string BotSecret = "GoMvU3cBkJtT3dDnNyZAlMxYAmO0cEqS";
 
 
     public void AddAuthHeader(HttpRequestMessage request)
@@ -31,7 +31,7 @@ public class Token
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://bots.qq.com/app/getAppAccessToken");
 
-            string json = JsonSerializer.Serialize(new AccessTokenParam(AppId, BotSercet));
+            string json = JsonSerializer.Serialize(new AccessTokenParam(AppId, BotSecret));
 
             Console.WriteLine(json);
             request.Headers.Add("Content-Type", "application/json");

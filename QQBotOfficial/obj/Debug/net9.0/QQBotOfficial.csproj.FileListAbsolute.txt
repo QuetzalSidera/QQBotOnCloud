@@ -19,3 +19,4 @@
 /Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/obj/Debug/net9.0/QQBotOfficial.genruntimeconfig.cache
 /Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/obj/Debug/net9.0/ref/QQBotOfficial.dll
 /Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/obj/Debug/net9.0/QQBotOfficial.sourcelink.json
+/Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/bin/Debug/net9.0/BouncyCastle.Crypto.dll
