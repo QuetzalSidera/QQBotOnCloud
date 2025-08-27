@@ -17,7 +17,7 @@ public class Program
             {
                 // listenOptions.UseHttps(GetCertificate());
                 // 使用开发证书（ASP.NET Core自动生成）
-                listenOptions.UseHttps();
+                // listenOptions.UseHttps();
             });
         });
 

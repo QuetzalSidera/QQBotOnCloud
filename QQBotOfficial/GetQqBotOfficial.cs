@@ -11,7 +11,6 @@ public static class GetQqBotOfficial
     public static async Task<IResult> GetHandler(HttpContext httpContext)
     {
         var request = httpContext.Request;
-
         // 读取请求体
         using var reader = new StreamReader(request.Body, Encoding.UTF8);
         var body = await reader.ReadToEndAsync();
