@@ -16,13 +16,13 @@ public class Program
         {
             options.ListenAnyIP(8443, listenOptions =>
             {
-                // 方法1：使用配置方式而不是直接UseHttps()
-                listenOptions.UseHttps(httpsOptions =>
-                {
-                    // httpsOptions.ServerCertificate = LoadCertificate();
-                    httpsOptions.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                    httpsOptions.CheckCertificateRevocation = false;
-                });
+                // // 方法1：使用配置方式而不是直接UseHttps()
+                // listenOptions.UseHttps(httpsOptions =>
+                // {
+                //     // httpsOptions.ServerCertificate = LoadCertificate();
+                //     httpsOptions.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                //     httpsOptions.CheckCertificateRevocation = false;
+                // });
             });
         });
 
