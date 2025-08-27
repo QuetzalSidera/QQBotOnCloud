@@ -1,0 +1,360 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using DeepSeek.Core.Models;
+using QQBotOfficial.Dto;
+
+namespace QQBotOfficial;
+
+public static class Tools
+{
+    /// <summary>
+    /// 发送私聊消息
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="openId">QQ 用户的 openid，可在各类事件中获得。</param>
+    public static async Task SendPrivateMessage(string message, string openId)
+    {
+        string path = $"/v2/users/{openId}/messages";
+        var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
+        var bodyStr = JsonSerializer.Serialize(new SendPrivateMessageParams
+        {
+            Content = message,
+            MessageType = 0,
+        });
+        request.Content = new StringContent(bodyStr);
+        if (TokenManager.AccessToken != string.Empty)
+            TokenManager.AddAuthHeader(request);
+        await HttpClientService.Client.SendAsync(request);
+    }
+
+    public class SendPrivateMessageParams
+    {
+        [JsonPropertyName("content")] public string Content { get; set; }
+
+        /// <summary>
+        /// 消息类型：0 是文本，2 是 markdown， 3 ark，4 embed，7 media 富媒体
+        /// </summary>
+        [JsonPropertyName("msg_type")]
+        public int MessageType { get; set; }
+    }
+
+    /// <summary>
+    /// 发送私聊消息
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="group_openid">群聊的 openid</param>
+    public static async Task SendGroupMessage(string message, string group_openid)
+    {
+        string path = $"/v2/groups/{group_openid}/messages";
+        var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
+        var bodyStr = JsonSerializer.Serialize(new SendGroupMessageParams
+        {
+            Content = message,
+            MessageType = 0,
+        });
+        request.Content = new StringContent(bodyStr);
+        if (TokenManager.AccessToken != string.Empty)
+            TokenManager.AddAuthHeader(request);
+        await HttpClientService.Client.SendAsync(request);
+    }
+
+    public class SendGroupMessageParams
+    {
+        [JsonPropertyName("content")] public string Content { get; set; }
+
+        /// <summary>
+        /// 消息类型：0 是文本，2 是 markdown， 3 ark，4 embed，7 media 富媒体
+        /// </summary>
+        [JsonPropertyName("msg_type")]
+        public int MessageType { get; set; }
+    }
+}
+
+public static class Commands
+{
+    /// <summary>
+    /// 常用命令实现
+    /// </summary>
+    /// Debug 
+    public async static Task<bool> Handler(string body, ChatType type)
+    {
+        const string prefix = "Debug";
+        const string modeOn = "-ModeOn";
+        const string modeOff = "-ModeOff";
+        const string changeSystemMessage = "-ChangeSystemMessage";
+        const string removeHistory = "-RemoveHistory";
+        const string changeModel = "-ChangeModel";
+        const string listModels = "-ListModels";
+        const string help = "-Help";
+
+        ContextId? contextId = body.GetContextId();
+        if (contextId == null)
+            return false;
+        const bool isDebugUser = true;
+        string? text = body.GetContent();
+        text = text?.TrimStart();
+        if (text?.StartsWith("@" + Config.Name) == true)
+        {
+            text = text[(Config.Name.Length + 1)..];
+        }
+
+        text = text?.TrimStart();
+        if (text == null)
+            return false;
+
+        var cmds = text.Split(" ");
+
+        foreach (var cmd in cmds)
+            Console.WriteLine(cmd);
+        try
+        {
+            if (cmds[0] != prefix)
+                return false;
+            if (isDebugUser)
+            {
+                switch (cmds[1])
+                {
+                    //打开调试模式
+                    case modeOn:
+                        switch (type)
+                        {
+                            case ChatType.Group:
+                                DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, true);
+                                await Tools.SendGroupMessage(contextId.Id, "[调试模式] 打开");
+                                return true;
+                            case ChatType.Private:
+                                DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, true);
+                                await Tools.SendPrivateMessage(contextId.Id, "[调试模式] 打开");
+                                return true;
+                            default:
+                                return false;
+                        }
+                    //关闭调试模式
+                    case modeOff:
+                        switch (type)
+                        {
+                            case ChatType.Group:
+                                DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, false);
+                                await Tools.SendGroupMessage(contextId.Id, "[调试模式] 关闭");
+                                return true;
+                            case ChatType.Private:
+                                DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, false);
+                                await Tools.SendPrivateMessage(contextId.Id, "[调试模式] 关闭");
+                                return true;
+                            default:
+                                return false;
+                        }
+                }
+
+                if (!DeepSeekAssistant.HistoryManager.TryGetDebugMode(contextId, out var debugMode) ||
+                    debugMode != true)
+                {
+                    switch (type)
+                    {
+                        case ChatType.Group:
+                            await Tools.SendGroupMessage(contextId.Id, "[调试输出] 调试模式未打开");
+                            return false;
+                        case ChatType.Private:
+                            await Tools.SendPrivateMessage(contextId.Id, "[调试输出] 调试模式未打开");
+                            return false;
+                        default:
+                            return false;
+                    }
+                }
+                else
+                {
+                    switch (cmds[1])
+                    {
+                        case changeSystemMessage:
+                            string message = cmds.Length > 2 ? cmds[2] : string.Empty;
+                            string changeSystemMessageMessage = $"[调试输出] 清空上下文历史，将SystemMessage重置为: {message}";
+                            DeepSeekAssistant.HistoryManager.ChangeSystemMessage(contextId,
+                                Message.NewSystemMessage(message));
+                            DeepSeekAssistant.HistoryManager.RemoveHistory(contextId);
+                            switch (type)
+                            {
+                                case ChatType.Group:
+                                    await Tools.SendGroupMessage(contextId.Id, changeSystemMessageMessage);
+                                    return true;
+                                case ChatType.Private:
+                                    await Tools.SendPrivateMessage(contextId.Id, changeSystemMessageMessage);
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        case removeHistory:
+                            string removeHistoryMessage = "[调试输出] 清空上下文历史";
+                            DeepSeekAssistant.HistoryManager.RemoveHistory(contextId);
+                            DeepSeekAssistant.HistoryManager.RemoveSystemMessage(contextId);
+                            switch (type)
+                            {
+                                case ChatType.Group:
+                                    await Tools.SendGroupMessage(contextId.Id, removeHistoryMessage);
+                                    return true;
+                                case ChatType.Private:
+                                    await Tools.SendPrivateMessage(contextId.Id, removeHistoryMessage);
+                                    return true;
+                                default:
+                                    return false;
+                            }
+
+                        case changeModel:
+                            string model = cmds.Length > 2 ? cmds[2] : string.Empty;
+                            string changeModelMessage = $"[调试输出] 模型设置为: {model}";
+                            string changeModelErrorMessage = $"[调试输出] 非法输入，不存在的模型: {model}";
+                            if (Models.DeepSeek.ChangeModel(model))
+                            {
+                                switch (type)
+                                {
+                                    case ChatType.Group:
+                                        await Tools.SendGroupMessage(contextId.Id, changeModelMessage);
+                                        return true;
+                                    case ChatType.Private:
+                                        await Tools.SendPrivateMessage(contextId.Id, changeModelMessage);
+                                        return true;
+                                    default:
+                                        return false;
+                                }
+                            }
+                            else
+                            {
+                                switch (type)
+                                {
+                                    case ChatType.Group:
+                                        await Tools.SendGroupMessage(contextId.Id, changeModelErrorMessage);
+                                        return true;
+                                    case ChatType.Private:
+                                        await Tools.SendPrivateMessage(contextId.Id, changeModelErrorMessage);
+                                        return true;
+                                    default:
+                                        return false;
+                                }
+                            }
+                        case listModels:
+                            string availableModels = string.Join(",", DeepSeekAssistant.PossibleModel);
+                            string listModelsMessage = $"[调试输出] 可用模型: {availableModels}";
+                            switch (type)
+                            {
+                                case ChatType.Group:
+                                    await Tools.SendGroupMessage(contextId.Id, listModelsMessage);
+                                    return true;
+                                case ChatType.Private:
+                                    await Tools.SendPrivateMessage(contextId.Id, listModelsMessage);
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        case help:
+                            string helpMessage = "[调试输出] 可用命令:\n" +
+                                                 prefix + " " + modeOn + " 打开调试模式\n" +
+                                                 prefix + " " + modeOff + "关闭调试模式\n" +
+                                                 prefix + " " + changeSystemMessage + " <string> 更改人设\n" +
+                                                 prefix + " " + removeHistory + " 清空对话上下文\n" +
+                                                 prefix + " " + changeModel + " <string> 更改模型\n" +
+                                                 prefix + " " + listModels + " 展示可用模型\n" +
+                                                 prefix + " " + help + " 命令帮助\n";
+                            switch (type)
+                            {
+                                case ChatType.Group:
+                                    await Tools.SendGroupMessage(contextId.Id, helpMessage);
+                                    return true;
+                                case ChatType.Private:
+                                    await Tools.SendPrivateMessage(contextId.Id, helpMessage);
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        default:
+                            string defaultMessage = $"[调试输出] 不支持的命令: {cmds[1]}";
+                            switch (type)
+                            {
+                                case ChatType.Group:
+                                    await Tools.SendGroupMessage(contextId.Id, defaultMessage);
+                                    return true;
+                                case ChatType.Private:
+                                    await Tools.SendPrivateMessage(contextId.Id, defaultMessage);
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                    }
+                }
+            }
+            else
+            {
+                switch (type)
+                {
+                    case ChatType.Group:
+                        await Tools.SendGroupMessage(contextId.Id, "[调试输出] 暂无权限");
+                        return true;
+                    case ChatType.Private:
+                        await Tools.SendPrivateMessage(contextId.Id, "[调试输出] 暂无权限");
+                        return true;
+                }
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return false;
+    }
+
+    public static ContextId? GetContextId(this string body)
+    {
+        var response = JsonSerializer.Deserialize<EventPayload>(body);
+        if (response == null)
+            return null;
+        switch (EventTypeEnumHelper.ToEventTypeEnum(response.EventType))
+        {
+            case EventTypeEnum.GatewayEventName:
+                return null;
+                break;
+            case EventTypeEnum.GroupAtMessageCreate:
+                var groupProcessed = JsonSerializer.Deserialize<GroupReceiveMessage>(body);
+                if (groupProcessed == null)
+                    return null;
+                var groupOpenId = groupProcessed.GroupOpenId;
+                return new ContextId(ChatType.Group, groupOpenId);
+                break;
+            case EventTypeEnum.C2CMessageCreate:
+                var privateProcessed = JsonSerializer.Deserialize<PrivateReceiveMessage>(body);
+                if (privateProcessed == null)
+                    return null;
+                var privateOpenId = privateProcessed.Author.OpenId;
+                return new ContextId(ChatType.Group, privateOpenId);
+                break;
+            default:
+                return null;
+                break;
+        }
+    }
+
+    public static string? GetContent(this string body)
+    {
+        var response = JsonSerializer.Deserialize<EventPayload>(body);
+        if (response == null)
+            return null;
+        switch (EventTypeEnumHelper.ToEventTypeEnum(response.EventType))
+        {
+            case EventTypeEnum.GatewayEventName:
+                return null;
+
+            case EventTypeEnum.GroupAtMessageCreate:
+                var groupProcessed = JsonSerializer.Deserialize<GroupReceiveMessage>(body);
+                if (groupProcessed == null)
+                    return null;
+                return groupProcessed.Content;
+
+            case EventTypeEnum.C2CMessageCreate:
+                var privateProcessed = JsonSerializer.Deserialize<PrivateReceiveMessage>(body);
+                if (privateProcessed == null)
+                    return null;
+                return privateProcessed.Content;
+
+            default:
+                return null;
+        }
+    }
+}

@@ -33,7 +33,6 @@ public class CallbackValidationEventRet
     [JsonPropertyName("signature")] public string Signature { get; set; }
 }
 
-
 public enum OperationCodeEnum
 {
     /// <summary>
@@ -60,10 +59,15 @@ public static class OperationCodeEnumHelper
     }
 }
 
+/// <summary>
+/// OperationCodeEnum=0时用
+/// </summary>
 public enum EventTypeEnum
 {
     Unknown = 0,
     GatewayEventName = 1,
+    C2CMessageCreate = 2,
+    GroupAtMessageCreate = 3
 }
 
 public static class EventTypeEnumHelper
@@ -73,6 +77,9 @@ public static class EventTypeEnumHelper
         return eventType switch
         {
             "GATEWAY_EVENT_NAME" => EventTypeEnum.GatewayEventName,
+            "C2C_MESSAGE_CREATE" => EventTypeEnum.C2CMessageCreate,
+            "GROUP_AT_MESSAGE_CREATE" => EventTypeEnum.GroupAtMessageCreate,
+            "GATEWAY_EVENT_CREATE" => EventTypeEnum.GroupAtMessageCreate,
             _ => EventTypeEnum.Unknown
         };
     }

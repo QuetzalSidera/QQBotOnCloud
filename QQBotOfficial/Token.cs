@@ -6,16 +6,16 @@ namespace QQBotOfficial;
 /// <summary>
 /// Token相关管理类
 /// </summary>
-public class Token
+public class TokenManager
 {
-    public string AccessToken = string.Empty;
+    public static string AccessToken = string.Empty;
     public const string BotQqId = "3889831055";
     public const string AppId = "102805649";
     public const string BotToken = "YMyBoWQHB5qxoSUkjD8DndZBrHoQq3JV";
     public const string BotSecret = "GoMvU3cBkJtT3dDnNyZAlMxYAmO0cEqS";
 
 
-    public void AddAuthHeader(HttpRequestMessage request)
+    public static void AddAuthHeader(HttpRequestMessage request)
     {
         request.Headers.Add("Authorization", "QQBot " + AccessToken);
     }
@@ -25,11 +25,11 @@ public class Token
         WriteIndented = true
     };
 
-    public async Task GetAccessToken()
+    public static async Task GetAccessToken()
     {
         try
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://bots.qq.com/app/getAppAccessToken");
+            var request = new HttpRequestMessage(HttpMethod.Post, Config.AccessTokenBaseUrl);
 
             string json = JsonSerializer.Serialize(new AccessTokenParam(AppId, BotSecret));
 

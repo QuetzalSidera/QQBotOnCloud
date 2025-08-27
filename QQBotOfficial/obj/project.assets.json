@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     "net9.0": {
+      "Ater.DeepSeek.Core/1.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/DeepSeek.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/DeepSeek.Core.dll": {}
+        }
+      },
       "BouncyCastle/1.8.9": {
         "type": "package",
         "compile": {
@@ -113,6 +122,21 @@
     }
   },
   "libraries": {
+    "Ater.DeepSeek.Core/1.2.0": {
+      "sha512": "ylWWbChYdtxWA+2wgdxpGCGXoQMepbFmitPePb0NrG5j7WnB+etIcrHULt/C8k1oAFcJ5w9buE7okXPcRvlqIA==",
+      "type": "package",
+      "path": "ater.deepseek.core/1.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "README_cn.md",
+        "ater.deepseek.core.1.2.0.nupkg.sha512",
+        "ater.deepseek.core.nuspec",
+        "lib/net8.0/DeepSeek.Core.dll",
+        "logo.jpg"
+      ]
+    },
     "BouncyCastle/1.8.9": {
       "sha512": "axnBgvdD5n+FnEG6efk/tfKuMFru7R/EoISH9zjh319yb3HD24TEHSAbNN/lTRT2ulOGRxDgOsCjkuk08iwWPg==",
       "type": "package",
@@ -481,6 +505,7 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Ater.DeepSeek.Core >= 1.2.0",
       "BouncyCastle >= 1.8.9",
       "BouncyCastle.Crypto.dll >= 1.8.1",
       "Swashbuckle.AspNetCore >= 9.0.4"
@@ -529,6 +554,10 @@
       "net9.0": {
         "targetAlias": "net9.0",
         "dependencies": {
+          "Ater.DeepSeek.Core": {
+            "target": "Package",
+            "version": "[1.2.0, )"
+          },
           "BouncyCastle": {
             "target": "Package",
             "version": "[1.8.9, )"
@@ -563,6 +592,36 @@
     }
   },
   "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'BouncyCastle' 1.8.9 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-8xfc-gm6g-vgpv",
+      "libraryId": "BouncyCastle",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'BouncyCastle' 1.8.9 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-m44j-cfrm-g8qc",
+      "libraryId": "BouncyCastle",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'BouncyCastle' 1.8.9 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-v435-xc8x-wvr9",
+      "libraryId": "BouncyCastle",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    },
     {
       "code": "NU1701",
       "level": "Warning",

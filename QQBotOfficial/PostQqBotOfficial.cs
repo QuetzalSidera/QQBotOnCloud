@@ -69,6 +69,24 @@ public class PostQqBotOfficial
 
     public static async Task DispatchHandler(string body, HttpContext httpContext)
     {
+        var response = JsonSerializer.Deserialize<EventPayload>(body);
+        if (response == null)
+            return;
+        switch (EventTypeEnumHelper.ToEventTypeEnum(response.EventType))
+        {
+            case EventTypeEnum.GatewayEventName:
+                await GatewayEventName.Handler(body, httpContext);
+                break;
+            case EventTypeEnum.GroupAtMessageCreate:
+                await GroupMessage.Handler(body, httpContext);
+                break;
+            case EventTypeEnum.C2CMessageCreate:
+                await PrivateMessage.Handler(body, httpContext);
+                break;
+            default:
+                Console.WriteLine($"不支持的事件类型: {response.EventType}");
+                break;
+        }
     }
 
     public static async Task CallbackAakHandler(string body, HttpContext httpContext)
@@ -93,7 +111,7 @@ public class PostQqBotOfficial
 
         string signature = GoEd25519Compatible.GenerateSignature(
             plainToken: plainToken,
-            botSecret: Token.BotSecret,
+            botSecret: TokenManager.BotSecret,
             eventTs: eventTs
         );
 
@@ -104,7 +122,7 @@ public class PostQqBotOfficial
         };
         Console.WriteLine("in CallbackValidationHandler 3");
         Console.WriteLine(
-            $"BotSecret:{Token.BotSecret}, EventTs:{eventTs}, PlainToken:{plainToken}, Signature:{signature}");
+            $"BotSecret:{TokenManager.BotSecret}, EventTs:{eventTs}, PlainToken:{plainToken}, Signature:{signature}");
         var json = JsonSerializer.Serialize(result);
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = 200;

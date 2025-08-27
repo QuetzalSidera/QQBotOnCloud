@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Q3f1f1chmP8=",
+  "dgSpecHash": "yvaOoyR2yW0=",
   "success": true,
   "projectFilePath": "/Users/qianshuang/Project/C#Project/QQBotOfficial/QQBotOfficial/QQBotOfficial.csproj",
   "expectedPackageFiles": [
+    "/Users/qianshuang/.nuget/packages/ater.deepseek.core/1.2.0/ater.deepseek.core.1.2.0.nupkg.sha512",
     "/Users/qianshuang/.nuget/packages/bouncycastle/1.8.9/bouncycastle.1.8.9.nupkg.sha512",
     "/Users/qianshuang/.nuget/packages/bouncycastle.crypto.dll/1.8.1/bouncycastle.crypto.dll.1.8.1.nupkg.sha512",
     "/Users/qianshuang/.nuget/packages/microsoft.extensions.apidescription.server/9.0.0/microsoft.extensions.apidescription.server.9.0.0.nupkg.sha512",
@@ -14,6 +15,36 @@
     "/Users/qianshuang/.nuget/packages/swashbuckle.aspnetcore.swaggerui/9.0.4/swashbuckle.aspnetcore.swaggerui.9.0.4.nupkg.sha512"
   ],
   "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'BouncyCastle' 1.8.9 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-8xfc-gm6g-vgpv",
+      "libraryId": "BouncyCastle",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'BouncyCastle' 1.8.9 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-m44j-cfrm-g8qc",
+      "libraryId": "BouncyCastle",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'BouncyCastle' 1.8.9 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-v435-xc8x-wvr9",
+      "libraryId": "BouncyCastle",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    },
     {
       "code": "NU1701",
       "level": "Warning",
