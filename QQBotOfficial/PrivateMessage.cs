@@ -35,6 +35,7 @@ public static class PrivateMessage
         catch (Exception ex)
         {
             Console.WriteLine("私聊消息处理错误");
+            Console.WriteLine(body);
             return;
         }
     }

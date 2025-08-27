@@ -32,6 +32,7 @@ public static class GroupMessage
         catch (Exception ex)
         {
             Console.WriteLine("群聊消息处理错误");
+            Console.WriteLine(body);
             return;
         }
     }
