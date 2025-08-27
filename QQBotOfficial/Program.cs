@@ -15,7 +15,7 @@ public class Program
         {
             options.ListenAnyIP(8443, listenOptions =>
             {
-                listenOptions.UseHttps("development.pfx", "Qs@81920");
+                // listenOptions.UseHttps("development.pfx", "Qs@81920");
             });
         });
 
