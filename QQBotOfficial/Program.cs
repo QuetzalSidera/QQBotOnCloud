@@ -17,7 +17,12 @@ public class Program
             {
                 // listenOptions.UseHttps(GetCertificate());
                 // 使用开发证书（ASP.NET Core自动生成）
-                // listenOptions.UseHttps();
+
+                // 使用开发证书（需要安装.NET Core开发证书）
+                listenOptions.UseHttps(httpsOptions =>
+                {
+                    // 使用开发证书
+                });
             });
         });
 
@@ -28,5 +33,18 @@ public class Program
         app.MapGet("/qqbotofficial", async (HttpContext context) => await GetQqBotOfficial.GetHandler(context));
 
         app.Run();
+    }
+
+    private static X509Certificate2 GetDevelopmentCertificate()
+    {
+        // 尝试获取开发证书
+        var cert = new X509Certificate2(Path.Combine(Directory.GetCurrentDirectory(), "localhost.pfx"), "password");
+
+        // 或者使用证书存储中的开发证书
+        using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+        store.Open(OpenFlags.ReadOnly);
+        var certificates = store.Certificates.Find(X509FindType.FindBySubjectName, "localhost", true);
+
+        return certificates.Count > 0 ? certificates[0] : null;
     }
 }
