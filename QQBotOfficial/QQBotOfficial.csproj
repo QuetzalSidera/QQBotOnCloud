@@ -18,4 +18,8 @@
       <None Include="bin\Debug\net9.0\mycert.pfx" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="bin\Debug\net9.0\quetzalsidera.pfx" />
+    </ItemGroup>
+
 </Project>
