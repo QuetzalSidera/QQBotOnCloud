@@ -13,7 +13,7 @@ public static class PrivateMessage
     {
         try
         {
-            var response = JsonSerializer.Deserialize<PrivateReceiveMessage>(body);
+            var response = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
             if (response == null)
                 return;
 
@@ -22,9 +22,9 @@ public static class PrivateMessage
             if (id == null)
                 return;
             //获取用户标识
-            var openId = response.Author.OpenId;
-            var name = response.Author.OpenId;
-            var message = response.Content;
+            var openId = response.Data.Author.OpenId;
+            var name = response.Data.Author.OpenId;
+            var message = response.Data.Content;
             //如果普通命令没有处理，则交由AI
             if (!(await Commands.Handler(body, ChatType.Private)))
             {

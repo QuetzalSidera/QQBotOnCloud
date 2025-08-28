@@ -33,6 +33,9 @@ public class PrivateReceiveMessage
     /// </summary>
     [JsonPropertyName("attachments")]
     public AttachmentsDto Attachments { get; set; }
+
+    [JsonPropertyName("message_scene")] public object MessageScene { get; set; }
+    [JsonPropertyName("message_type")] public int MessageType { get; set; }
 }
 
 public class AuthorPrivateDto
@@ -42,6 +45,9 @@ public class AuthorPrivateDto
     /// </summary>
     [JsonPropertyName("user_openid")]
     public string OpenId { get; set; }
+
+    [JsonPropertyName("union_openid")] public string UnionOpenId { get; set; }
+    [JsonPropertyName("id")] public string Id { get; set; }
 }
 
 public class AttachmentsDto
@@ -127,5 +133,6 @@ public class AuthorGorupDto
     /// <summary>
     /// 用户在本群的 member_openid
     /// </summary>
-    [JsonPropertyName("member_openid")] public string MemberOpenId { get; set; }
+    [JsonPropertyName("member_openid")]
+    public string MemberOpenId { get; set; }
 }
