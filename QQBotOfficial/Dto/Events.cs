@@ -28,12 +28,6 @@ public class PrivateReceiveMessage
     [JsonPropertyName("timestamp")]
     public string Timestamp { get; set; }
 
-    /// <summary>
-    /// 富媒体文件附件，文件类型："图片，语音，视频，文件"
-    /// </summary>
-    [JsonPropertyName("attachments")]
-    public AttachmentsDto Attachments { get; set; }
-
     [JsonPropertyName("message_scene")] public object MessageScene { get; set; }
     [JsonPropertyName("message_type")] public int MessageType { get; set; }
 }
