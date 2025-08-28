@@ -1,0 +1,50 @@
+{
+  "op": 0,
+  "id": "C2C_MESSAGE_CREATE:mgdzjgkgwebtrr6rvomenligz4qbqccn4lhulugtjxfuohchhcigml0xmisoz2",
+  "d": {
+    "id": "ROBOT1.0_6Y8
+    YBm5s6cfjkl-X2fpU8fwBMFGcXf.1d6egDHhJv3Vt2SEBRDJ5xydDujjUyvC1JzM01fDoBAtvgdcCfwohNQjlj6H3wBCAbx3PilKrAso!
+    "
+    ，
+    "content"
+    ：
+    "你
+    好
+    "，"
+    timestamp
+    "："
+    2025-08-28T08: 07
+    :
+    49
+    +
+    08: 00
+    "，"
+    author
+    "：1"
+    id
+    "："
+    9DFF4F1A10EABA3A06F821D55F16B915
+    "，"
+    user_openid
+    "： "
+    9DFF4F1A10E
+    ABA3A06F821D55F16B915
+    ", "
+    union_openid
+    ": "
+    9DFF4F1A10EABA3A06F821D55F16B915
+    "}, "
+    message_scene
+    ": {"
+    source
+    "; "
+    default
+    ", "
+    ext
+    ":["
+    "]
+    3,
+    "message_type": 0
+  },
+  "t": "C2C_MESSAGE_CREATE"
+}

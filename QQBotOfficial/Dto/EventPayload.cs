@@ -8,7 +8,6 @@ public class EventPayload
     [JsonPropertyName("id")] public string EventId { get; set; }
     [JsonPropertyName("op")] public int OpCode { get; set; }
     [JsonPropertyName("d")] public object Data { get; set; }
-    [JsonPropertyName("s")] public int Sequence { get; set; }
     [JsonPropertyName("t")] public string EventType { get; set; }
 }
 
@@ -17,7 +16,6 @@ public class EventPayload<TEvent>
     [JsonPropertyName("id")] public string EventId { get; set; }
     [JsonPropertyName("op")] public int OpCode { get; set; }
     [JsonPropertyName("d")] public TEvent Data { get; set; }
-    [JsonPropertyName("s")] public int Sequence { get; set; }
     [JsonPropertyName("t")] public string EventType { get; set; }
 }
 

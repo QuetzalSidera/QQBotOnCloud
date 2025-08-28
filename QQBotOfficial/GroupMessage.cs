@@ -10,7 +10,7 @@ public static class GroupMessage
     {
         try
         {
-            var response = JsonSerializer.Deserialize<GroupReceiveMessage>(body);
+            var response = JsonSerializer.Deserialize<EventPayload<GroupReceiveMessage>>(body);
             if (response == null)
                 return;
             //生成唯一ID
@@ -18,9 +18,9 @@ public static class GroupMessage
             if (id == null)
                 return;
             //获取用户标识
-            var openId = response.GroupOpenId;
-            var name = response.Author.MemberOpenId;
-            var message = response.Content;
+            var openId = response.Data.GroupOpenId;
+            var name = response.Data.Author.MemberOpenId;
+            var message = response.Data.Content;
 
             //如果普通命令没有处理，则交由AI
             if (!(await Commands.Handler(body, ChatType.Group)))
