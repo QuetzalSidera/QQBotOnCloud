@@ -83,6 +83,9 @@ public class PostQqBotOfficial
             case EventTypeEnum.C2CMessageReceive:
                 await PrivateMessage.Handler(body, httpContext);
                 break;
+            case EventTypeEnum.C2CMessageCreate:
+                await PrivateMessage.Handler(body, httpContext);
+                break;
             default:
                 Console.WriteLine($"不支持的事件类型: {response.EventType}");
                 break;
