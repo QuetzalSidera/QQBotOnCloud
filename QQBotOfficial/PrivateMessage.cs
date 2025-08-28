@@ -28,13 +28,14 @@ public static class PrivateMessage
             var openId = response.Data.Author.OpenId;
             var name = response.Data.Author.OpenId;
             var message = response.Data.Content;
+            var eventId= response.Data.Id;
             Console.WriteLine("in PrivateMessage Handler 5");    
             //如果普通命令没有处理，则交由AI
-            if (!(await Commands.Handler(body, ChatType.Private)))
+            if (!(await Commands.Handler(body, ChatType.Private,eventId)))
             {
                 Console.WriteLine("in PrivateMessage Handler 6");    
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                await Tools.SendPrivateMessage(result, openId);
+                await Tools.SendPrivateMessage(result, openId,eventId);
             }
             Console.WriteLine("in PrivateMessage Handler 7");    
         }
