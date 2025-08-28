@@ -80,7 +80,7 @@ public static class EventTypeEnumHelper
             "C2C_MESSAGE_RECEIVE" => EventTypeEnum.C2CMessageReceive,
             "C2C_MESSAGE_CREATE" => EventTypeEnum.C2CMessageCreate,
             "GROUP_AT_MESSAGE_RECEIVE" => EventTypeEnum.GroupAtMessageReceive,
-            "GROUP_AT_MESSAGE_CREATE" => EventTypeEnum.GroupAtMessageReceive,
+            "GROUP_AT_MESSAGE_CREATE" => EventTypeEnum.GroupAtMessageCreate,
             _ => EventTypeEnum.Unknown
         };
     }
