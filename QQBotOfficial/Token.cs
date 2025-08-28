@@ -1,6 +1,9 @@
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
 
 namespace QQBotOfficial;
 
@@ -20,6 +23,11 @@ public class TokenManager
     {
         request.Headers.Add("Authorization", "QQBot " + AccessToken);
     }
+    public static void AddAuthHeader(IHeaderDictionary header)
+    {
+        header.Append("Authorization", "QQBot " + AccessToken);
+    }
+    
 
     private JsonSerializerOptions _options = new JsonSerializerOptions
     {

@@ -39,7 +39,14 @@ public static class PrivateMessage
             {
                 Console.WriteLine("in PrivateMessage Handler 6");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                await httpContext.Response.WriteAsync(result);
+                var payload = new
+                {
+                    msg_type = 0,
+                    msg_id = msgId,
+                    content = result,
+                };
+                TokenManager.AddAuthHeader(httpContext.Response.Headers);
+                await httpContext.Response.WriteAsync(JsonSerializer.Serialize(payload));
                 // await Tools.SendPrivateMessage(result, openId, eventId, msgId);
             }
 
