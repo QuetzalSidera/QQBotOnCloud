@@ -45,6 +45,7 @@ public static class PrivateMessage
             {
                 Console.WriteLine("in PrivateMessage Handler 6");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
+                Console.WriteLine(result);
                 await Tools.SendPrivateMessage(result, openId, eventId, msgId);
             }
 

@@ -41,6 +41,7 @@ public static class GroupMessage
             {
                 Console.WriteLine("in GroupAtMessageHandler A5");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
+                Console.WriteLine(result);
                 await Tools.SendGroupMessage(result, openId, msgId);
             }
 
@@ -89,6 +90,7 @@ public static class GroupMessage
             {
                 Console.WriteLine("in GroupAtMessageHandler B5");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
+                Console.WriteLine(result);
                 await Tools.SendGroupMessage(result, openId, msgId);
             }
 
