@@ -6,6 +6,8 @@ namespace QQBotOfficial;
 
 public static class GroupMessage
 {
+    private static string _timestamp = string.Empty;
+
     public static async Task Handler(string body, HttpContext httpContext)
     {
         try
@@ -22,13 +24,17 @@ public static class GroupMessage
             var name = response.Data.Author.MemberOpenId;
             var message = response.Data.Content;
             var msgId = response.Data.Id;
-            // var eventId= response.EventType;
+            var eventId = response.EventType;
+            var oldTimestamp = _timestamp;
+            _timestamp = response.Data.Timestamp;
+            if (oldTimestamp == _timestamp)
+                return;
             // var eventId = "GROUP_MSG_RECEIVE";
             //如果普通命令没有处理，则交由AI
-            if (!(await Commands.Handler(body, ChatType.Group, msgId:msgId)))
+            if (!(await Commands.Handler(body, ChatType.Group, eventId, msgId)))
             {
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                await Tools.SendGroupMessage(result, openId, msgId:msgId);
+                await Tools.SendGroupMessage(result, openId, eventId, msgId);
             }
         }
         catch (Exception ex)

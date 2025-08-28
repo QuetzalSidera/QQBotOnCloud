@@ -9,6 +9,8 @@ namespace QQBotOfficial;
 
 public static class PrivateMessage
 {
+    private static string _timestamp = string.Empty;
+
     public static async Task Handler(string body, HttpContext httpContext)
     {
         try
@@ -30,6 +32,10 @@ public static class PrivateMessage
             var message = response.Data.Content;
             var msgId = response.Data.Id;
             var eventId = response.EventType;
+            var oldTimestamp = _timestamp;
+            _timestamp = response.Data.Timestamp;
+            if (oldTimestamp == _timestamp)
+                return;
             // var eventId = "C2C_MSG_RECEIVE";
             Console.WriteLine(eventId);
             Console.WriteLine(msgId);
@@ -39,15 +45,7 @@ public static class PrivateMessage
             {
                 Console.WriteLine("in PrivateMessage Handler 6");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                var payload = new
-                {
-                    msg_type = 0,
-                    msg_id = msgId,
-                    content = result,
-                };
-                TokenManager.AddAuthHeader(httpContext.Response.Headers);
-                await httpContext.Response.WriteAsync(JsonSerializer.Serialize(payload));
-                // await Tools.SendPrivateMessage(result, openId, eventId, msgId);
+                await Tools.SendPrivateMessage(result, openId, eventId, msgId);
             }
 
             Console.WriteLine("in PrivateMessage Handler 7");
