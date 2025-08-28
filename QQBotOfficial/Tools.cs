@@ -14,7 +14,7 @@ public static class Tools
     /// <param name="openId">QQ 用户的 openid，可在各类事件中获得。</param>
     /// <param name="eventId">前置收到的事件 ID，用于发送被动消息，支持事件："INTERACTION_CREATE"、"C2C_MSG_RECEIVE"、"FRIEND_ADD"</param>
     /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
-    public static async Task SendPrivateMessage(string message, string openId, string eventId,string msgId)
+    public static async Task SendPrivateMessage(string message, string openId, string? eventId=null,string? msgId=null)
     {
         Console.WriteLine("in SendPrivateMessage 1");
         string path = $"/v2/users/{openId}/messages";
@@ -23,8 +23,8 @@ public static class Tools
         {
             Content = message,
             MessageType = 0,
-            EventId = eventId,
-            MsgId = msgId,
+            EventId = eventId??"",
+            MsgId = msgId??"",
         });
         request.Content = new StringContent(bodyStr);
         if (TokenManager.AccessToken != string.Empty)
@@ -59,7 +59,7 @@ public static class Tools
     /// <param name="groupOpenId">群聊的 openid</param>
     /// <param name="eventId">前置收到的事件 ID，用于发送被动消息，支持事件："INTERACTION_CREATE"、"GROUP_ADD_ROBOT"、"GROUP_MSG_RECEIVE"</param>
     /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
-    public static async Task SendGroupMessage(string message, string groupOpenId, string eventId,string msgId)
+    public static async Task SendGroupMessage(string message, string groupOpenId, string? eventId=null,string? msgId=null)
     {
         Console.WriteLine("in SendGroupMessage 1");
         string path = $"/v2/groups/{groupOpenId}/messages";
@@ -68,8 +68,8 @@ public static class Tools
         {
             Content = message,
             MessageType = 0,
-            EventId = eventId,
-            MsgId = msgId,
+            EventId = eventId??"",
+            MsgId = msgId??"",
         });
         request.Content = new StringContent(bodyStr);
         if (TokenManager.AccessToken != string.Empty)
@@ -102,7 +102,7 @@ public static class Commands
     /// 常用命令实现
     /// </summary>
     /// Debug 
-    public async static Task<bool> Handler(string body, ChatType type,string eventId,string msgId)
+    public async static Task<bool> Handler(string body, ChatType type,string? eventId=null,string? msgId=null)
     {
         const string prefix = "Debug";
         const string modeOn = "-ModeOn";

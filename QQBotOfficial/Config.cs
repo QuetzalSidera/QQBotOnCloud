@@ -11,6 +11,6 @@ public static class Config
     public const string BaseUrl = "https://api.sgroup.qq.com";
 #endif
 
-    public const string AccessTokenBaseUrl = "https://bots.qq.com/app/getAppAccessToken ";
+    public const string AccessTokenBaseUrl = "https://bots.qq.com/app/getAppAccessToken";
     public const string Name = "和栗薰子";
 }
