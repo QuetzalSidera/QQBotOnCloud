@@ -48,45 +48,41 @@
             opacity: 0.1;
         }
 
-        .disclaimer {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-size: 0.9rem;
-            backdrop-filter: blur(5px);
+        .header-content {
+            position: relative;
+            z-index: 2;
         }
 
         .character-info {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 20px;
         }
 
         .character-avatar {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             background: linear-gradient(45deg, #ffcfe0, #ff9bc6);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 4px solid white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
+            border: 6px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
         }
 
-        .character-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .character-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
         }
 
         .character-avatar i {
-            font-size: 60px;
+            font-size: 70px;
             color: white;
         }
 
@@ -116,6 +112,15 @@
             font-size: 1.3rem;
             margin-bottom: 20px;
             font-style: italic;
+        }
+
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
         }
 
         .section {
@@ -338,55 +343,14 @@
                 flex-direction: column;
                 align-items: center;
             }
-        }
 
-        .qr-setup {
-            margin: 25px 0;
-        }
+            .character-avatar {
+                width: 120px;
+                height: 120px;
+            }
 
-        .qr-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .qr-code {
-            text-align: center;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .qr-code img {
-            border: 1px solid #eee;
-            margin-bottom: 15px;
-        }
-
-        .qr-code p {
-            font-weight: bold;
-            color: #7a5c9e;
-        }
-
-        .qr-steps {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .qr-steps ol {
-            margin-left: 20px;
-            margin-bottom: 20px;
-        }
-
-        .qr-steps li {
-            margin-bottom: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .qr-container {
-                flex-direction: column;
+            .character-avatar i {
+                font-size: 60px;
             }
         }
     </style>
@@ -394,35 +358,38 @@
 <body>
 <div class="container">
     <header>
-        <div class="character-info">
+        <div class="header-content">
+            <!-- 机器人头像位置 -->
             <div class="character-avatar">
-                <!-- 替换为服务器上的头像 -->
-                <img src="/image/和栗薰子.jepg" alt="和栗薰子头像">
+                <i class="fas fa-robot"></i>
             </div>
-            <div class="character-text">
-                <h1>和栗薰子QQ机器人</h1>
-                <p class="tagline">基于C#开发的智能QQ助手</p>
+
+            <div class="character-info">
+                <div class="character-text">
+                    <h1>和栗薰子QQ机器人</h1>
+                    <p class="tagline">基于C#开发的智能QQ助手</p>
+                </div>
             </div>
-        </div>
 
-        <div class="disclaimer">
-            声明：本项目为第三方非盈利的粉丝创作，与官方无关。机器人使用C#编写，基于.NET技术栈开发。
-        </div>
+            <div class="disclaimer">
+                声明：本项目为第三方非盈利的粉丝创作，与官方无关。机器人使用C#编写，基于.NET技术栈开发。
+            </div>
 
-        <p>来自《熏香花朵凛然绽放》的和栗薰子现已作为QQ机器人上线，为您提供智能聊天与服务！</p>
+            <p>来自《熏香花朵凛然绽放》的和栗薰子现已作为QQ机器人上线，为您提供智能聊天与服务！</p>
 
-        <div class="links">
-            <a href="#features" class="link-item"><i class="fas fa-star"></i> 功能特点</a>
-            <a href="#commands" class="link-item"><i class="fas fa-code"></i> 使用指令</a>
-            <a href="#setup" class="link-item"><i class="fas fa-cogs"></i> 安装指南</a>
-            <a href="#tech" class="link-item"><i class="fas fa-laptop-code"></i> 技术栈</a>
+            <div class="links">
+                <a href="#features" class="link-item"><i class="fas fa-star"></i> 功能特点</a>
+                <a href="#commands" class="link-item"><i class="fas fa-code"></i> 使用指令</a>
+                <a href="#setup" class="link-item"><i class="fas fa-cogs"></i> 安装指南</a>
+                <a href="#tech" class="link-item"><i class="fas fa-laptop-code"></i> 技术栈</a>
+            </div>
         </div>
     </header>
 
     <section class="section" id="about">
         <h2>关于本项目</h2>
         <p>
-            和栗薰子QQ机器人是一个基于C#开发的非盈利第三方项目，使用.NET技术栈实现。该项目由粉丝创作，旨在为《熏香花朵凛然绽放》的同好们提供有趣的聊天体验。</p>
+            和栗薰子QQ机器人是一个基于C#开发的非盈利第三方项目，使用.NET技术栈和Mirai框架实现。该项目由粉丝创作，旨在为《熏香花朵凛然绽放》的爱好者提供有趣的聊天体验。</p>
 
         <p>
             薰子机器人接入了DeepSeek的API，具备强大的AI对话能力，能够理解自然语言并进行智能回复。无论是日常闲聊、问题解答还是娱乐互动，薰子都能成为您的贴心助手。</p>
@@ -559,6 +526,7 @@
             </div>
         </div>
 
+
         <div class="links" style="justify-content: flex-start; margin-top: 20px;">
             <a href="https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649" class="btn"
                style="background: #12b7f5;" target="_blank"><i class="fab fa-qq"></i> 直接添加机器人</a>
@@ -566,6 +534,58 @@
                     class="fas fa-book"></i> QQ频道使用指南</a>
         </div>
     </section>
+
+    <style>
+        .qr-setup {
+            margin: 25px 0;
+        }
+
+        .qr-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-code {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-code img {
+            border: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+
+        .qr-code p {
+            font-weight: bold;
+            color: #7a5c9e;
+        }
+
+        .qr-steps {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .qr-steps ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .qr-steps li {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .qr-container {
+                flex-direction: column;
+            }
+        }
+    </style>
 
     <section class="section" id="deepseek">
         <h2>DeepSeek技术支持</h2>
@@ -634,6 +654,15 @@
             sweet.addEventListener('mouseleave', function () {
                 this.querySelector('i').style.transform = 'scale(1)';
             });
+        });
+
+        // 头像悬停动画
+        const avatar = document.querySelector('.character-avatar');
+        avatar.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        avatar.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
         });
     });
 </script>

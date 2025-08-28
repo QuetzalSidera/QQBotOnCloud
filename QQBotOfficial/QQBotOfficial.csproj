@@ -25,4 +25,8 @@
       <Content Include="bin\Debug\net9.0\quetzalsidera.pfx" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="img\" />
+    </ItemGroup>
+
 </Project>
