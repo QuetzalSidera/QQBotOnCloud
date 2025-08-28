@@ -19,15 +19,18 @@ public class TokenManager
     public const string BotSecret = "GoMvU3cBkJtT3dDnNyZAlMxYAmO0cEqS";
 
 
+    private static readonly Timer Time = new Timer( state => GetAccessToken().RunSynchronously(), null, 0, 6000);
+
     public static void AddAuthHeader(HttpRequestMessage request)
     {
         request.Headers.Add("Authorization", "QQBot " + AccessToken);
     }
+
     public static void AddAuthHeader(IHeaderDictionary header)
     {
         header.Append("Authorization", "QQBot " + AccessToken);
     }
-    
+
 
     private JsonSerializerOptions _options = new JsonSerializerOptions
     {
