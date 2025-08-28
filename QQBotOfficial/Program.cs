@@ -21,7 +21,6 @@ public class Program
         // WebHook 接收端点 - 使用正确的ASP.NT Core方式
         app.MapPost("/qqbotofficial/api", async (HttpContext context) => await PostQqBotOfficial.PostHandler(context));
         app.MapGet("/", async (HttpContext context) => await GetQqBotOfficial.GetHandler(context));
-        app.MapGet("/image/和栗薰子.jepg", async (HttpContext context) => await GetQqBotOfficial.GetImgHandler(context));
         app.Run();
     }
 }
