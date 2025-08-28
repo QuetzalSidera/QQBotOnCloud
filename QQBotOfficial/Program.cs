@@ -23,10 +23,10 @@ public class Program
         
         var app = builder.Build();
         
-        // WebHook 接收端点 - 使用正确的ASP.NET Core方式
+        // WebHook 接收端点 - 使用正确的ASP.NT Core方式
         app.MapPost("/qqbotofficial/api", async (HttpContext context) => await PostQqBotOfficial.PostHandler(context));
-        app.MapGet("/qqbotofficial", async (HttpContext context) => await GetQqBotOfficial.GetHandler(context));
-        
+        app.MapGet("/", async (HttpContext context) => await GetQqBotOfficial.GetHandler(context));
+
         app.Run();
      
     }

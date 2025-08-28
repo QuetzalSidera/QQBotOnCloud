@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>和栗薰子QQ机器人 - 第三方非盈利项目</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f9f0ff 0%, #e6e6fa 100%);
+            color: #4a4a6a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(120deg, #b28fce, #8a76ab);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(138, 118, 171, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="50" cy="50" r="40" fill="white"/></svg>');
+            opacity: 0.1;
+        }
+
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .character-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .character-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            background: linear-gradient(45deg, #ffcfe0, #ff9bc6);
+        }
+
+        .character-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ffcfe0, #ff9bc6);
+            color: white;
+            font-size: 2rem;
+        }
+
+        .character-text {
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #7a5c9e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e6d8f2;
+        }
+
+        h3 {
+            color: #6b5b8c;
+            margin: 15px 0;
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(138, 118, 171, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            background: #f9f5ff;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #e6d8f2;
+        }
+
+        .feature:hover {
+            background: #f0e6ff;
+            box-shadow: 0 8px 15px rgba(138, 118, 171, 0.2);
+        }
+
+        .feature i {
+            font-size: 2.8rem;
+            color: #8a76ab;
+            margin-bottom: 20px;
+        }
+
+        .feature h3 {
+            margin-bottom: 15px;
+            color: #6b5b8c;
+        }
+
+        .command-list {
+            background: #f9f5ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .command {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+            border-left: 5px solid #b28fce;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .command-code {
+            background: #f0e6ff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-family: monospace;
+            color: #6b5b8c;
+            font-weight: bold;
+        }
+
+        .setup-steps {
+            list-style-type: none;
+            counter-reset: step-counter;
+        }
+
+        .setup-steps li {
+            margin-bottom: 25px;
+            padding-left: 60px;
+            position: relative;
+        }
+
+        .setup-steps li:before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 45px;
+            height: 45px;
+            background: #b28fce;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(138, 118, 171, 0.3);
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8a76ab;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(138, 118, 171, 0.4);
+        }
+
+        .btn:hover {
+            background: #7a5c9e;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(138, 118, 171, 0.5);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            color: #7a5c9e;
+            border-top: 1px solid #e6d8f2;
+        }
+
+        .sweet-tooth {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sweet {
+            background: #ffeff7;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sweet i {
+            color: #ff6b9e;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .tech-item {
+            background: #f0e6ff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .link-item {
+            background: #8a76ab;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .link-item:hover {
+            background: #7a5c9e;
+            transform: translateY(-2px);
+        }
+
+        .qr-setup {
+            margin: 25px 0;
+        }
+
+        .qr-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-code {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-code img {
+            border: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+
+        .qr-code p {
+            font-weight: bold;
+            color: #7a5c9e;
+        }
+
+        .qr-steps {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .qr-steps ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .qr-steps li {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .setup-steps li {
+                padding-left: 50px;
+            }
+
+            .character-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .tech-stack {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .qr-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="character-info">
+            <div class="character-avatar">
+                <!-- 方式1: 使用本地图片文件 -->
+                <img src="kaoruko_avatar.png" alt="和栗薰子头像" onerror="this.style.display='none'; document.querySelector('.avatar-placeholder').style.display='flex';">
+                <div class="avatar-placeholder" style="display: none;">
+                    <i class="fas fa-robot"></i>
+                </div>
+            </div>
+            <div class="character-text">
+                <h1>和栗薰子QQ机器人</h1>
+                <p class="tagline">桔梗女校二年级 · 甜食爱好者 · 基于C#开发的智能QQ助手</p>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            声明：本项目为第三方非盈利的粉丝创作，与官方无关。机器人使用C#编写，基于.NET技术栈开发。
+        </div>
+
+        <p>来自《熏香花朵凛然绽放》的和栗薰子现已作为QQ机器人上线，为您提供智能聊天与服务！</p>
+
+        <div class="links">
+            <a href="#features" class="link-item"><i class="fas fa-star"></i> 功能特点</a>
+            <a href="#commands" class="link-item"><i class="fas fa-code"></i> 使用指令</a>
+            <a href="#setup" class="link-item"><i class="fas fa-cogs"></i> 安装指南</a>
+            <a href="#tech" class="link-item"><i class="fas fa-laptop-code"></i> 技术栈</a>
+        </div>
+    </header>
+
+    <section class="section" id="about">
+        <h2>关于本项目</h2>
+        <p>和栗薰子QQ机器人是一个基于C#开发的非盈利第三方项目，使用.NET技术栈和QQ频道API实现。该项目由粉丝创作，旨在为《熏香花朵凛然绽放》的爱好者提供有趣的聊天体验。</p>
+
+        <p>薰子机器人接入了DeepSeek的API，具备强大的AI对话能力，能够理解自然语言并进行智能回复。无论是日常闲聊、问题解答还是娱乐互动，薰子都能成为您的贴心助手。</p>
+
+        <div class="sweet-tooth">
+            <div class="sweet">
+                <i class="fas fa-cookie"></i>
+                <span>曲奇饼干</span>
+            </div>
+            <div class="sweet">
+                <i class="fas fa-ice-cream"></i>
+                <span>冰淇淋</span>
+            </div>
+            <div class="sweet">
+                <i class="fas fa-candy-cane"></i>
+                <span>糖果</span>
+            </div>
+            <div class="sweet">
+                <i class="fas fa-birthday-cake"></i>
+                <span>蛋糕</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <h2>主要功能</h2>
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-comments"></i>
+                <h3>智能对话</h3>
+                <p>基于DeepSeek API，能够进行自然流畅的对话，回答各种问题，陪您聊天解闷。</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-star"></i>
+                <h3>今日运势</h3>
+                <p>每天为您提供专属运势占卜，包括幸运数字、幸运颜色和温馨提示。</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-sun"></i>
+                <h3>早安问候</h3>
+                <p>发送"早上好"获取暖心早安问候，开启美好的一天。</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-question-circle"></i>
+                <h3>信息查询</h3>
+                <p>可以回答各种常识问题，帮助您快速获取需要的信息。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="commands">
+        <h2>使用指令</h2>
+        <p>以下是一些常用的机器人指令示例：</p>
+        <div class="command-list">
+            <div class="command">
+                <span>获取今日运势</span>
+                <code class="command-code">/今日运势</code>
+            </div>
+            <div class="command">
+                <span>开始闲聊模式</span>
+                <code class="command-code">/闲聊 话题</code>
+            </div>
+            <div class="command">
+                <span>早安问候</span>
+                <code class="command-code">/早上好</code>
+            </div>
+            <div class="command">
+                <span>查询天气</span>
+                <code class="command-code">/天气 城市名</code>
+            </div>
+            <div class="command">
+                <span>甜食推荐</span>
+                <code class="command-code">/推荐甜食</code>
+            </div>
+            <div class="command">
+                <span>帮助信息</span>
+                <code class="command-code">/帮助</code>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="setup">
+        <h2>使用方法</h2>
+        <p class="disclaimer" style="background: #ffe6e6; color: #d46a6a; margin-bottom: 20px;">
+            <i class="fas fa-exclamation-circle"></i> 注意：由于个人开发者的局限，此机器人仅作为QQ频道机器人使用，无法添加到普通QQ群。
+        </p>
+
+        <div class="qr-setup">
+            <div class="qr-container">
+                <div class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649" alt="添加薰子QQ频道机器人">
+                    <p>使用手机QQ扫描二维码添加</p>
+                </div>
+                <div class="qr-steps">
+                    <h3>简单三步添加机器人：</h3>
+                    <ol>
+                        <li>使用手机QQ扫描上方二维码</li>
+                        <li>点击"添加到频道"按钮</li>
+                        <li>选择您已创建的QQ频道完成添加</li>
+                    </ol>
+                    <p>或直接点击链接：<a href="https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649" style="color: #8a76ab; font-weight: bold;">https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649</a></p>
+                </div>
+            </div>
+        </div>
+
+        <h3>频道机器人特点</h3>
+        <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-top: 20px;">
+            <div class="feature">
+                <i class="fab fa-qq"></i>
+                <h3>频道专属</h3>
+                <p>专为QQ频道设计，充分利用频道特性</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-comment-dots"></i>
+                <h3>频道互动</h3>
+                <p>支持频道内的多种消息类型和互动方式</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-shield-alt"></i>
+                <h3>权限管理</h3>
+                <p>完善的频道身份组和权限管理系统</p>
+            </div>
+        </div>
+
+        <h3>开始使用</h3>
+        <p>添加成功后，在您的QQ频道中尝试以下命令：</p>
+        <div class="command-list">
+            <div class="command">
+                <span>与薰子聊天</span>
+                <code class="command-code">@和栗薰子 你好</code>
+            </div>
+            <div class="command">
+                <span>查看今日运势</span>
+                <code class="command-code">/今日运势</code>
+            </div>
+            <div class="command">
+                <span>早安问候</span>
+                <code class="command-code">/早上好</code>
+            </div>
+        </div>
+
+        <div class="links" style="justify-content: flex-start; margin-top: 20px;">
+            <a href="https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649" class="btn" style="background: #12b7f5;" target="_blank"><i class="fab fa-qq"></i> 直接添加机器人</a>
+            <a href="https://q.qq.com/wiki/" class="btn" style="background: #7a5c9e;" target="_blank"><i class="fas fa-book"></i> QQ频道使用指南</a>
+        </div>
+    </section>
+
+    <section class="section" id="tech">
+        <h2>技术栈</h2>
+        <p>本项目使用以下技术开发：</p>
+
+        <div class="tech-stack">
+            <div class="tech-item">
+                <i class="fab fa-windows"></i>
+                <span>.NET 6</span>
+            </div>
+            <div class="tech-item">
+                <i class="fas fa-code"></i>
+                <span>C#</span>
+            </div>
+            <div class="tech-item">
+                <i class="fab fa-qq"></i>
+                <span>QQ频道API</span>
+            </div>
+            <div class="tech-item">
+                <i class="fas fa-brain"></i>
+                <span>DeepSeek API</span>
+            </div>
+        </div>
+
+        <h3>相关链接</h3>
+        <div class="links">
+            <a href="https://dotnet.microsoft.com/" class="link-item" target="_blank"><i class="fab fa-microsoft"></i> .NET官方</a>
+            <a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/" class="link-item" target="_blank"><i class="fas fa-book"></i> C#文档</a>
+            <a href="https://q.qq.com/wiki/" class="link-item" target="_blank"><i class="fab fa-qq"></i> QQ频道开发文档</a>
+            <a href="https://www.deepseek.com/" class="link-item" target="_blank"><i class="fas fa-ai"></i> DeepSeek</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2023 和栗薰子QQ机器人项目 | 基于《熏香花朵凛然绽放》角色</p>
+        <p>免责声明: 本项目为粉丝创作，与官方无关。机器人代码开源，仅供学习交流使用。</p>
+        <div class="links">
+            <a href="https://github.com/example/kaoruko-qqbot" class="link-item" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://gitee.com/example/kaoruko-qqbot" class="link-item" target="_blank"><i class="fab fa-git-alt"></i> Gitee</a>
+            <a href="mailto:support@example.com" class="link-item"><i class="fas fa-envelope"></i> 联系支持</a>
+        </div>
+    </footer>
+</div>
+
+<script>
+    // 交互效果
+    document.addEventListener('DOMContentLoaded', function() {
+        const features = document.querySelectorAll('.feature');
+        features.forEach(feature => {
+            feature.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.03)';
+            });
+            feature.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (this.getAttribute('href') !== '#') {
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 甜食图标动画
+        const sweets = document.querySelectorAll('.sweet');
+        sweets.forEach(sweet => {
+            sweet.addEventListener('mouseenter', function() {
+                this.querySelector('i').style.transform = 'scale(1.3)';
+            });
+            sweet.addEventListener('mouseleave', function() {
+                this.querySelector('i').style.transform = 'scale(1)';
+            });
+        });
+
+        // 检查头像是否加载失败
+        const avatarImg = document.querySelector('.character-avatar img');
+        if (avatarImg) {
+            avatarImg.onerror = function() {
+                this.style.display = 'none';
+                document.querySelector('.avatar-placeholder').style.display = 'flex';
+            };
+
+            // 如果src为空，也显示占位符
+            if (!avatarImg.src || avatarImg.src === window.location.href) {
+                avatarImg.style.display = 'none';
+                document.querySelector('.avatar-placeholder').style.display = 'flex';
+            }
+        }
+    });
+</script>
+</body>
+</html>
