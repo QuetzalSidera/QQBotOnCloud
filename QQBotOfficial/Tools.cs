@@ -312,17 +312,17 @@ public static class Commands
                 return null;
                 break;
             case EventTypeEnum.GroupAtMessageCreate:
-                var groupProcessed = JsonSerializer.Deserialize<GroupReceiveMessage>(body);
+                var groupProcessed = JsonSerializer.Deserialize<EventPayload<GroupReceiveMessage>>(body);
                 if (groupProcessed == null)
                     return null;
-                var groupOpenId = groupProcessed.GroupOpenId;
+                var groupOpenId = groupProcessed.Data.GroupOpenId;
                 return new ContextId(ChatType.Group, groupOpenId);
                 break;
             case EventTypeEnum.C2CMessageCreate:
-                var privateProcessed = JsonSerializer.Deserialize<PrivateReceiveMessage>(body);
+                var privateProcessed = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
                 if (privateProcessed == null)
                     return null;
-                var privateOpenId = privateProcessed.Author.OpenId;
+                var privateOpenId = privateProcessed.Data.Author.OpenId;
                 return new ContextId(ChatType.Group, privateOpenId);
                 break;
             default:
