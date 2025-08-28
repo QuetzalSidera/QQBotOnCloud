@@ -6,6 +6,8 @@ namespace QQBotOfficial;
 
 public class ChannelPrivate
 {
+    private static string _timestamp = string.Empty;
+
     public static async Task Handler(string body, HttpContext httpContext)
     {
         try
@@ -24,6 +26,10 @@ public class ChannelPrivate
             var message = response.Data.Content;
             var name = response.Data.Author.Username;
             var msgId = response.EventId;
+            var oldTimestamp = _timestamp;
+            _timestamp = response.Data.Timestamp;
+            if (oldTimestamp == _timestamp)
+                return;
             // var eventId = "GROUP_MSG_RECEIVE";
             //如果普通命令没有处理，则交由AI
             Console.WriteLine("in ChannelPrivate Handler 4");
