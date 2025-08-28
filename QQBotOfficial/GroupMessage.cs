@@ -21,12 +21,13 @@ public static class GroupMessage
             var openId = response.Data.GroupOpenId;
             var name = response.Data.Author.MemberOpenId;
             var message = response.Data.Content;
-            var eventId = response.Data.Id;
+            var msgId = response.Data.Id;
+            var eventId= response.EventType;
             //如果普通命令没有处理，则交由AI
-            if (!(await Commands.Handler(body, ChatType.Group,eventId)))
+            if (!(await Commands.Handler(body, ChatType.Group,eventId,msgId)))
             {
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                await Tools.SendGroupMessage(result, openId,eventId);
+                await Tools.SendGroupMessage(result, openId,eventId,msgId);
             }
         }
         catch (Exception ex)

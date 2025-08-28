@@ -13,7 +13,8 @@ public static class Tools
     /// <param name="message"></param>
     /// <param name="openId">QQ 用户的 openid，可在各类事件中获得。</param>
     /// <param name="eventId">前置收到的事件 ID，用于发送被动消息，支持事件："INTERACTION_CREATE"、"C2C_MSG_RECEIVE"、"FRIEND_ADD"</param>
-    public static async Task SendPrivateMessage(string message, string openId, string eventId)
+    /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
+    public static async Task SendPrivateMessage(string message, string openId, string eventId,string msgId)
     {
         Console.WriteLine("in SendPrivateMessage 1");
         string path = $"/v2/users/{openId}/messages";
@@ -22,7 +23,8 @@ public static class Tools
         {
             Content = message,
             MessageType = 0,
-            EventId = eventId
+            EventId = eventId,
+            MsgId = msgId,
         });
         request.Content = new StringContent(bodyStr);
         if (TokenManager.AccessToken != string.Empty)
@@ -46,6 +48,8 @@ public static class Tools
         public int MessageType { get; set; }
 
         [JsonPropertyName("event_id")] public string EventId { get; set; }
+        [JsonPropertyName("msg_id")] public string MsgId { get; set; }
+
     }
 
     /// <summary>
@@ -54,7 +58,8 @@ public static class Tools
     /// <param name="message"></param>
     /// <param name="groupOpenId">群聊的 openid</param>
     /// <param name="eventId">前置收到的事件 ID，用于发送被动消息，支持事件："INTERACTION_CREATE"、"GROUP_ADD_ROBOT"、"GROUP_MSG_RECEIVE"</param>
-    public static async Task SendGroupMessage(string message, string groupOpenId, string eventId)
+    /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
+    public static async Task SendGroupMessage(string message, string groupOpenId, string eventId,string msgId)
     {
         Console.WriteLine("in SendGroupMessage 1");
         string path = $"/v2/groups/{groupOpenId}/messages";
@@ -63,7 +68,8 @@ public static class Tools
         {
             Content = message,
             MessageType = 0,
-            EventId = eventId
+            EventId = eventId,
+            MsgId = msgId,
         });
         request.Content = new StringContent(bodyStr);
         if (TokenManager.AccessToken != string.Empty)
@@ -86,6 +92,7 @@ public static class Tools
         public int MessageType { get; set; }
 
         [JsonPropertyName("event_id")] public string EventId { get; set; }
+        [JsonPropertyName("msg_id")] public string MsgId { get; set; }
     }
 }
 
@@ -95,7 +102,7 @@ public static class Commands
     /// 常用命令实现
     /// </summary>
     /// Debug 
-    public async static Task<bool> Handler(string body, ChatType type,string eventId)
+    public async static Task<bool> Handler(string body, ChatType type,string eventId,string msgId)
     {
         const string prefix = "Debug";
         const string modeOn = "-ModeOn";
@@ -139,11 +146,11 @@ public static class Commands
                         {
                             case ChatType.Group:
                                 DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, true);
-                                await Tools.SendGroupMessage(contextId.Id, "[调试模式] 打开",eventId);
+                                await Tools.SendGroupMessage(contextId.Id, "[调试模式] 打开",eventId,msgId);
                                 return true;
                             case ChatType.Private:
                                 DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, true);
-                                await Tools.SendPrivateMessage(contextId.Id, "[调试模式] 打开",eventId);
+                                await Tools.SendPrivateMessage(contextId.Id, "[调试模式] 打开",eventId,msgId);
                                 return true;
                             default:
                                 return false;
@@ -154,11 +161,11 @@ public static class Commands
                         {
                             case ChatType.Group:
                                 DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, false);
-                                await Tools.SendGroupMessage(contextId.Id, "[调试模式] 关闭",eventId);
+                                await Tools.SendGroupMessage(contextId.Id, "[调试模式] 关闭",eventId,msgId);
                                 return true;
                             case ChatType.Private:
                                 DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, false);
-                                await Tools.SendPrivateMessage(contextId.Id, "[调试模式] 关闭",eventId);
+                                await Tools.SendPrivateMessage(contextId.Id, "[调试模式] 关闭",eventId,msgId);
                                 return true;
                             default:
                                 return false;
@@ -171,10 +178,10 @@ public static class Commands
                     switch (type)
                     {
                         case ChatType.Group:
-                            await Tools.SendGroupMessage(contextId.Id, "[调试输出] 调试模式未打开",eventId);
+                            await Tools.SendGroupMessage(contextId.Id, "[调试输出] 调试模式未打开",eventId,msgId);
                             return false;
                         case ChatType.Private:
-                            await Tools.SendPrivateMessage(contextId.Id, "[调试输出] 调试模式未打开",eventId);
+                            await Tools.SendPrivateMessage(contextId.Id, "[调试输出] 调试模式未打开",eventId,msgId);
                             return false;
                         default:
                             return false;
@@ -193,10 +200,10 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, changeSystemMessageMessage,eventId);
+                                    await Tools.SendGroupMessage(contextId.Id, changeSystemMessageMessage,eventId,msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, changeSystemMessageMessage,eventId);
+                                    await Tools.SendPrivateMessage(contextId.Id, changeSystemMessageMessage,eventId,msgId);
                                     return true;
                                 default:
                                     return false;
@@ -208,10 +215,10 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, removeHistoryMessage,eventId);
+                                    await Tools.SendGroupMessage(contextId.Id, removeHistoryMessage,eventId,msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, removeHistoryMessage,eventId);
+                                    await Tools.SendPrivateMessage(contextId.Id, removeHistoryMessage,eventId,msgId);
                                     return true;
                                 default:
                                     return false;
@@ -226,10 +233,10 @@ public static class Commands
                                 switch (type)
                                 {
                                     case ChatType.Group:
-                                        await Tools.SendGroupMessage(contextId.Id, changeModelMessage,eventId);
+                                        await Tools.SendGroupMessage(contextId.Id, changeModelMessage,eventId,msgId);
                                         return true;
                                     case ChatType.Private:
-                                        await Tools.SendPrivateMessage(contextId.Id, changeModelMessage,eventId);
+                                        await Tools.SendPrivateMessage(contextId.Id, changeModelMessage,eventId,msgId);
                                         return true;
                                     default:
                                         return false;
@@ -240,10 +247,10 @@ public static class Commands
                                 switch (type)
                                 {
                                     case ChatType.Group:
-                                        await Tools.SendGroupMessage(contextId.Id, changeModelErrorMessage,eventId);
+                                        await Tools.SendGroupMessage(contextId.Id, changeModelErrorMessage,eventId,msgId);
                                         return true;
                                     case ChatType.Private:
-                                        await Tools.SendPrivateMessage(contextId.Id, changeModelErrorMessage,eventId);
+                                        await Tools.SendPrivateMessage(contextId.Id, changeModelErrorMessage,eventId,msgId;
                                         return true;
                                     default:
                                         return false;
@@ -255,10 +262,10 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, listModelsMessage,eventId);
+                                    await Tools.SendGroupMessage(contextId.Id, listModelsMessage,eventId,msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, listModelsMessage,eventId);
+                                    await Tools.SendPrivateMessage(contextId.Id, listModelsMessage,eventId,msgId);
                                     return true;
                                 default:
                                     return false;
@@ -275,10 +282,10 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, helpMessage,eventId);
+                                    await Tools.SendGroupMessage(contextId.Id, helpMessage,eventId,msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, helpMessage,eventId);
+                                    await Tools.SendPrivateMessage(contextId.Id, helpMessage,eventId,msgId);
                                     return true;
                                 default:
                                     return false;
@@ -288,10 +295,10 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, defaultMessage,eventId);
+                                    await Tools.SendGroupMessage(contextId.Id, defaultMessage,eventId,msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, defaultMessage,eventId);
+                                    await Tools.SendPrivateMessage(contextId.Id, defaultMessage,eventId,msgId);
                                     return true;
                                 default:
                                     return false;
@@ -304,10 +311,10 @@ public static class Commands
                 switch (type)
                 {
                     case ChatType.Group:
-                        await Tools.SendGroupMessage(contextId.Id, "[调试输出] 暂无权限",eventId);
+                        await Tools.SendGroupMessage(contextId.Id, "[调试输出] 暂无权限",eventId,msgId);
                         return true;
                     case ChatType.Private:
-                        await Tools.SendPrivateMessage(contextId.Id, "[调试输出] 暂无权限",eventId);
+                        await Tools.SendPrivateMessage(contextId.Id, "[调试输出] 暂无权限",eventId,msgId);
                         return true;
                 }
             }
