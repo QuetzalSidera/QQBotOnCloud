@@ -46,7 +46,7 @@ public class ChannelPrivate
         }
         catch (Exception ex)
         {
-            Console.WriteLine("群聊消息处理错误");
+            Console.WriteLine("频道私聊消息处理错误");
             Console.WriteLine(body);
             return;
         }
