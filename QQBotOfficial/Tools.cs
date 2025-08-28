@@ -36,6 +36,7 @@ public static class Tools
 
         var res = await HttpClientService.Client.SendAsync(request);
         Console.WriteLine(res.Content.ReadAsStringAsync().Result);
+        Console.WriteLine("in SendPrivateMessage 3");
     }
 
     public class SendPrivateMessageParams
