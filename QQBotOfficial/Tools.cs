@@ -14,6 +14,7 @@ public static class Tools
     /// <param name="openId">QQ 用户的 openid，可在各类事件中获得。</param>
     public static async Task SendPrivateMessage(string message, string openId)
     {
+        Console.WriteLine("in SendPrivateMessage 1");
         string path = $"/v2/users/{openId}/messages";
         var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
         var bodyStr = JsonSerializer.Serialize(new SendPrivateMessageParams
@@ -23,7 +24,11 @@ public static class Tools
         });
         request.Content = new StringContent(bodyStr);
         if (TokenManager.AccessToken != string.Empty)
+        {
+            Console.WriteLine("in SendPrivateMessage 2");
             TokenManager.AddAuthHeader(request);
+        }
+
         await HttpClientService.Client.SendAsync(request);
     }
 
@@ -45,6 +50,7 @@ public static class Tools
     /// <param name="group_openid">群聊的 openid</param>
     public static async Task SendGroupMessage(string message, string group_openid)
     {
+        Console.WriteLine("in SendGroupMessage 1");
         string path = $"/v2/groups/{group_openid}/messages";
         var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
         var bodyStr = JsonSerializer.Serialize(new SendGroupMessageParams
@@ -54,7 +60,11 @@ public static class Tools
         });
         request.Content = new StringContent(bodyStr);
         if (TokenManager.AccessToken != string.Empty)
+        {
             TokenManager.AddAuthHeader(request);
+            Console.WriteLine("in SendGroupMessage 2");
+        }
+
         await HttpClientService.Client.SendAsync(request);
     }
 

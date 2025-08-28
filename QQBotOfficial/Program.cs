@@ -10,6 +10,7 @@ public class Program
     public static async Task Main(string[] args)
     {
         await TokenManager.GetAccessToken();
+        Console.WriteLine(TokenManager.AccessToken);
         var builder = WebApplication.CreateBuilder(args);
         
         // 配置 Kestrel 监听 8443 端口，启用 HTTPS
