@@ -482,7 +482,7 @@
         <div class="qr-setup">
             <div class="qr-container">
                 <div class="qr-code">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649"
+                    <img src="https://quetzalsidera.me/img/QrCode.png"
                          alt="添加薰子QQ频道机器人">
                     <p>使用手机QQ扫描二维码添加</p>
                 </div>
@@ -495,11 +495,115 @@
                     </ol>
                     <p>或直接点击链接：<a
                             href="https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649"
-                            style="color: #8a76ab; font-weight: bold;">https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649</a>
+                            class="qr-link">https://qun.qq.com/qqweb/qunpro/jump?id=robot-share&robot_appid=102805649</a>
                     </p>
                 </div>
             </div>
         </div>
+
+        <style>
+            .qr-setup {
+                padding: 20px;
+                font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .qr-container {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                gap: 30px;
+                background-color: #f9f7fe;
+                border-radius: 12px;
+                padding: 25px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            .qr-code {
+                text-align: center;
+                flex: 0 0 auto;
+            }
+
+            .qr-code img {
+                width: 200px;
+                height: 200px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                border: 1px solid #e6e6e6;
+                transition: transform 0.3s ease;
+                object-fit: cover; /* 确保静态图片显示正常 */
+            }
+
+            .qr-code img:hover {
+                transform: scale(1.03);
+            }
+
+            .qr-code p {
+                margin-top: 15px;
+                color: #666;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .qr-steps {
+                flex: 1;
+                min-width: 250px;
+            }
+
+            .qr-steps h3 {
+                color: #333;
+                margin-bottom: 15px;
+                font-weight: 600;
+                font-size: 18px;
+            }
+
+            .qr-steps ol {
+                padding-left: 20px;
+                margin-bottom: 20px;
+            }
+
+            .qr-steps li {
+                margin-bottom: 10px;
+                line-height: 1.5;
+                color: #444;
+            }
+
+            .qr-steps p {
+                margin-top: 15px;
+                color: #555;
+                font-size: 14px;
+            }
+
+            .qr-link {
+                color: #8a76ab !important;
+                font-weight: bold;
+                text-decoration: none;
+                transition: color 0.2s ease;
+                word-break: break-all;
+            }
+
+            .qr-link:hover {
+                color: #6c5b7b !important;
+                text-decoration: underline;
+            }
+
+            @media (max-width: 600px) {
+                .qr-container {
+                    flex-direction: column;
+                    align-items: center;
+                    text-align: center;
+                }
+
+                .qr-steps {
+                    text-align: left;
+                }
+
+                .qr-steps ol {
+                    padding-left: 15px;
+                }
+            }
+        </style>
 
 
         <div class="links" style="justify-content: flex-start; margin-top: 20px;">
