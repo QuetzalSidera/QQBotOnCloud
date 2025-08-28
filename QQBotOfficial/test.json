@@ -1,0 +1,25 @@
+{
+  "op": 0,
+  "id": "DIRECT_MESSAGE_CREATE: 08a481e2d7e5e5f2892410c9d6d3e7fcf3f209380848a1b6c0c506",
+  "d": {
+    "id": "08a481e2d7e5e5f2892410c9d6d3e7fcf3f209380848alb6c0c506",
+    "channel_id": "5571911756344137",
+    "guild_id": "2599644809878077604",
+    "content": "你好",
+    "timestamp": "2025-08-28T17:02:25+08:00",
+    "author": {
+      "id": "7393447136820405095",
+      "username": "钱爽",
+      "avatar": "http://thirdqq.qlogo.cn/g?b=oidb&k=P0iamBPribic8hjCZAkUAVP7g&kti=aGpyuAwBHsA&s=0&t=1751806648",
+      "union_openid": "9DFF4F1A10EABA3А06F821D55F16B915"
+    },
+    "member": {
+      "joined_at": "2025-08-28T09:22:17+08:00"
+    },
+    "direct_message": true,
+    "seq": 8,
+    "seq_in_channel": "8",
+    "src_guild_id": "241672951348233826"
+  },
+  "t": "DIRECT_MESSAGE_CREATE"
+}

@@ -150,8 +150,8 @@ public class ChannelPrivateReceive
     [JsonPropertyName("direct_message")] public bool DirectMessage { get; set; }
     [JsonPropertyName("seq")] public int Seq { get; set; }
 
-    [JsonPropertyName("seq_in_channel")] public int SeqInChannel { get; set; }
-    [JsonPropertyName("src_guild_id")] public int SrcGuildId { get; set; }
+    [JsonPropertyName("seq_in_channel")] public string SeqInChannel { get; set; }
+    [JsonPropertyName("src_guild_id")] public string SrcGuildId { get; set; }
 }
 
 public class ChannelAuthorDto
