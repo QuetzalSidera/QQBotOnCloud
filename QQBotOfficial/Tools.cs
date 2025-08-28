@@ -29,7 +29,8 @@ public static class Tools
             TokenManager.AddAuthHeader(request);
         }
 
-        await HttpClientService.Client.SendAsync(request);
+        var res = await HttpClientService.Client.SendAsync(request);
+        Console.WriteLine(res.Content.ReadAsStringAsync().Result);
     }
 
     public class SendPrivateMessageParams
