@@ -85,7 +85,7 @@ public static class EventTypeEnumHelper
             "C2C_MESSAGE_CREATE" => EventTypeEnum.C2CMessageCreate,
             "GROUP_MSG_RECEIVE" => EventTypeEnum.GroupMessageReceive,
             "GROUP_AT_MESSAGE_CREATE" => EventTypeEnum.GroupAtMessageCreate,
-            "DIRECT_MESSAGE_RECEIVE" => EventTypeEnum.ChannelPrivateReceive,
+            "DIRECT_MESSAGE_CREATE" => EventTypeEnum.ChannelPrivateReceive,
             _ => EventTypeEnum.Unknown
         };
     }
