@@ -79,7 +79,7 @@ public static class EventTypeEnumHelper
             "GATEWAY_EVENT_NAME" => EventTypeEnum.GatewayEventName,
             "C2C_MESSAGE_RECEIVE" => EventTypeEnum.C2CMessageReceive,
             "C2C_MESSAGE_CREATE" => EventTypeEnum.C2CMessageCreate,
-            "GROUP_AT_MESSAGE_RECEIVE" => EventTypeEnum.GroupMessageReceive,
+            "GROUP_MESSAGE_RECEIVE" => EventTypeEnum.GroupMessageReceive,
             "GROUP_AT_MESSAGE_CREATE" => EventTypeEnum.GroupAtMessageCreate,
             _ => EventTypeEnum.Unknown
         };
