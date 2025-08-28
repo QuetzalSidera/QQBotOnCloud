@@ -64,10 +64,14 @@ public enum EventTypeEnum
 {
     Unknown = 0,
     GatewayEventName = 1,
+
     C2CMessageReceive = 2,
     C2CMessageCreate = 3,
+
     GroupMessageReceive = 4,
     GroupAtMessageCreate = 5,
+
+    ChannelPrivateReceive = 6,
 }
 
 public static class EventTypeEnumHelper
@@ -81,6 +85,7 @@ public static class EventTypeEnumHelper
             "C2C_MESSAGE_CREATE" => EventTypeEnum.C2CMessageCreate,
             "GROUP_MSG_RECEIVE" => EventTypeEnum.GroupMessageReceive,
             "GROUP_AT_MESSAGE_CREATE" => EventTypeEnum.GroupAtMessageCreate,
+            "DIRECT_MESSAGE_RECEIVE" => EventTypeEnum.ChannelPrivateReceive,
             _ => EventTypeEnum.Unknown
         };
     }

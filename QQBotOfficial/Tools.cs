@@ -1,6 +1,8 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DeepSeek.Core.Models;
+using QQBotOfficial;
 using QQBotOfficial.Dto;
 
 namespace QQBotOfficial;
@@ -12,10 +14,8 @@ public static class Tools
     /// </summary>
     /// <param name="message"></param>
     /// <param name="openId">QQ 用户的 openid，可在各类事件中获得。</param>
-    /// <param name="eventId">前置收到的事件 ID，用于发送被动消息，支持事件："INTERACTION_CREATE"、"C2C_MSG_RECEIVE"、"FRIEND_ADD"</param>
     /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
-    public static async Task SendPrivateMessage(string message, string openId, string? eventId = null,
-        string? msgId = null)
+    public static async Task SendPrivateMessage(string message, string openId, string msgId)
     {
         Console.WriteLine("in SendPrivateMessage 1");
         string path = $"/v2/users/{openId}/messages";
@@ -24,7 +24,6 @@ public static class Tools
         {
             Content = message,
             MessageType = 0,
-            EventId = eventId ?? "",
             MsgId = msgId ?? "",
         });
         request.Content = new StringContent(bodyStr);
@@ -76,11 +75,10 @@ public static class Tools
             TokenManager.AddAuthHeader(request);
             Console.WriteLine("in SendGroupMessage 2");
         }
-        
+
         var res = await HttpClientService.Client.SendAsync(request);
         Console.WriteLine(res.Content.ReadAsStringAsync().Result);
         Console.WriteLine("in SendGroupMessage 3");
-        
     }
 
     public class SendGroupMessageParams
@@ -95,15 +93,94 @@ public static class Tools
 
         [JsonPropertyName("msg_id")] public string MsgId { get; set; }
     }
+
+
+    /// <summary>
+    /// 发送私聊消息
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="guildId">私信的 guild_id</param>
+    /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
+    public static async Task SendChannelPrivateMessage(string message, string guildId, string msgId)
+    {
+        Console.WriteLine("in SendChannelPrivateMessage 1");
+        string path = $"/dms/{guildId}/messages";
+        var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
+        var bodyStr = JsonSerializer.Serialize(new SendChannelMessageParams
+        {
+            Content = message,
+            MsgId = msgId,
+        });
+        request.Content = new StringContent(bodyStr, Encoding.UTF8, "application/json");
+        if (TokenManager.AccessToken != string.Empty)
+        {
+            TokenManager.AddAuthHeader(request);
+            Console.WriteLine("in SendChannelPrivateMessage 2");
+        }
+
+        var res = await HttpClientService.Client.SendAsync(request);
+        Console.WriteLine(res.Content.ReadAsStringAsync().Result);
+        Console.WriteLine("in SendChannelPrivateMessage 3");
+    }
+
+
+    public class SendChannelMessageParams
+    {
+        [JsonPropertyName("content")] public string Content { get; set; }
+
+        [JsonPropertyName("msg_id")] public string MsgId { get; set; }
+    }
 }
 
 public static class Commands
 {
     /// <summary>
-    /// 常用命令实现
+    /// 聊天命令实现
+    /// </summary>
+    public static async Task<bool> MessageHandler(string id, string message, ChatType type, string msgId)
+    {
+        if (message.Trim().StartsWith("@" + Config.Name))
+            message = message[(Config.Name.Length + 1)..];
+        message = message.Trim();
+        string[] cmds = message.Split(' ');
+        if (cmds.Length == 0)
+            return false;
+        string retMessage = string.Empty;
+        switch (cmds[0])
+        {
+            case Config.GoodMorning:
+                retMessage = $"早上好,现在是: {DateTime.Now:yyyy-MM-dd HH:mm:ss} ";
+                break;
+            case Config.FortuneLookUp:
+                Random random = new Random();
+                int minMaxNumber = random.Next(10, 100);
+                retMessage = $"今天你的运势是{minMaxNumber}分";
+                break;
+            default:
+                return false;
+        }
+
+        switch (type)
+        {
+            case ChatType.Group:
+                await Tools.SendGroupMessage(retMessage, id, msgId);
+                return true;
+            case ChatType.Private:
+                await Tools.SendPrivateMessage(retMessage, id, msgId);
+                return true;
+            case ChatType.ChannelPrivate:
+                await Tools.SendChannelPrivateMessage(retMessage, id, msgId);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// 调试命令实现
     /// </summary>
     /// Debug 
-    public async static Task<bool> Handler(string body, ChatType type, string msgId)
+    public async static Task<bool> DebugHandler(string body, ChatType type, string msgId)
     {
         const string prefix = "Debug";
         const string modeOn = "-ModeOn";
@@ -133,6 +210,10 @@ public static class Commands
 
         foreach (var cmd in cmds)
             Console.WriteLine(cmd);
+
+        string? guildId = body.GetGuildId();
+        if (guildId == null && type == ChatType.ChannelPrivate)
+            return false;
         try
         {
             if (cmds[0] != prefix)
@@ -147,26 +228,35 @@ public static class Commands
                         {
                             case ChatType.Group:
                                 DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, true);
-                                await Tools.SendGroupMessage(contextId.Id, "[调试模式] 打开", msgId);
+                                await Tools.SendGroupMessage("[调试模式] 打开", contextId.Id, msgId);
                                 return true;
                             case ChatType.Private:
                                 DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, true);
-                                await Tools.SendPrivateMessage(contextId.Id, "[调试模式] 打开", msgId);
+                                await Tools.SendPrivateMessage("[调试模式] 打开", contextId.Id, msgId);
+                                return true;
+                            case ChatType.ChannelPrivate:
+                                DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, true);
+                                await Tools.SendChannelPrivateMessage("[调试模式] 打开", guildId ?? string.Empty, msgId);
                                 return true;
                             default:
                                 return false;
                         }
                     //关闭调试模式
                     case modeOff:
+                        const string debugOffMessage = "[调试模式] 关闭";
                         switch (type)
                         {
                             case ChatType.Group:
                                 DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, false);
-                                await Tools.SendGroupMessage(contextId.Id, "[调试模式] 关闭", msgId);
+                                await Tools.SendGroupMessage(debugOffMessage, contextId.Id, msgId);
                                 return true;
                             case ChatType.Private:
                                 DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, false);
-                                await Tools.SendPrivateMessage(contextId.Id, "[调试模式] 关闭", msgId);
+                                await Tools.SendPrivateMessage(debugOffMessage, contextId.Id, msgId);
+                                return true;
+                            case ChatType.ChannelPrivate:
+                                DeepSeekAssistant.HistoryManager.ChangeDebugMode(contextId, true);
+                                await Tools.SendChannelPrivateMessage(debugOffMessage, guildId ?? string.Empty, msgId);
                                 return true;
                             default:
                                 return false;
@@ -176,14 +266,18 @@ public static class Commands
                 if (!DeepSeekAssistant.HistoryManager.TryGetDebugMode(contextId, out var debugMode) ||
                     debugMode != true)
                 {
+                    const string debugOffErrorMessage = "[调试输出] 调试模式未打开";
                     switch (type)
                     {
                         case ChatType.Group:
-                            await Tools.SendGroupMessage(contextId.Id, "[调试输出] 调试模式未打开", msgId);
-                            return false;
+                            await Tools.SendGroupMessage(debugOffErrorMessage, contextId.Id, msgId);
+                            return true;
                         case ChatType.Private:
-                            await Tools.SendPrivateMessage(contextId.Id, "[调试输出] 调试模式未打开", msgId);
-                            return false;
+                            await Tools.SendPrivateMessage(debugOffErrorMessage, contextId.Id, msgId);
+                            return true;
+                        case ChatType.ChannelPrivate:
+                            await Tools.SendChannelPrivateMessage(debugOffErrorMessage, guildId ?? string.Empty, msgId);
+                            return true;
                         default:
                             return false;
                     }
@@ -201,10 +295,15 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, changeSystemMessageMessage, msgId);
+                                    await Tools.SendGroupMessage(changeSystemMessageMessage, contextId.Id, msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, changeSystemMessageMessage, msgId);
+                                    await Tools.SendPrivateMessage(changeSystemMessageMessage, contextId.Id, msgId);
+                                    return true;
+                                case ChatType.ChannelPrivate:
+                                    await Tools.SendChannelPrivateMessage(changeSystemMessageMessage,
+                                        guildId ?? string.Empty,
+                                        msgId);
                                     return true;
                                 default:
                                     return false;
@@ -216,10 +315,14 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, removeHistoryMessage, msgId);
+                                    await Tools.SendGroupMessage(removeHistoryMessage, contextId.Id, msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, removeHistoryMessage, msgId);
+                                    await Tools.SendPrivateMessage(removeHistoryMessage, contextId.Id, msgId);
+                                    return true;
+                                case ChatType.ChannelPrivate:
+                                    await Tools.SendChannelPrivateMessage(removeHistoryMessage, guildId ?? string.Empty,
+                                        msgId);
                                     return true;
                                 default:
                                     return false;
@@ -234,10 +337,14 @@ public static class Commands
                                 switch (type)
                                 {
                                     case ChatType.Group:
-                                        await Tools.SendGroupMessage(contextId.Id, changeModelMessage, msgId);
+                                        await Tools.SendGroupMessage(changeModelMessage, contextId.Id, msgId);
                                         return true;
                                     case ChatType.Private:
-                                        await Tools.SendPrivateMessage(contextId.Id, changeModelMessage, msgId);
+                                        await Tools.SendPrivateMessage(changeModelMessage, contextId.Id, msgId);
+                                        return true;
+                                    case ChatType.ChannelPrivate:
+                                        await Tools.SendChannelPrivateMessage(changeModelMessage,
+                                            guildId ?? string.Empty, msgId);
                                         return true;
                                     default:
                                         return false;
@@ -248,10 +355,15 @@ public static class Commands
                                 switch (type)
                                 {
                                     case ChatType.Group:
-                                        await Tools.SendGroupMessage(contextId.Id, changeModelErrorMessage, msgId);
+                                        await Tools.SendGroupMessage(changeModelErrorMessage, contextId.Id, msgId);
                                         return true;
                                     case ChatType.Private:
-                                        await Tools.SendPrivateMessage(contextId.Id, changeModelErrorMessage, msgId);
+                                        await Tools.SendPrivateMessage(changeModelErrorMessage, contextId.Id, msgId);
+                                        return true;
+                                    case ChatType.ChannelPrivate:
+                                        await Tools.SendChannelPrivateMessage(changeModelErrorMessage,
+                                            guildId ?? string.Empty,
+                                            msgId);
                                         return true;
                                     default:
                                         return false;
@@ -263,10 +375,14 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, listModelsMessage, msgId);
+                                    await Tools.SendGroupMessage(listModelsMessage, contextId.Id, msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, listModelsMessage, msgId);
+                                    await Tools.SendPrivateMessage(listModelsMessage, contextId.Id, msgId);
+                                    return true;
+                                case ChatType.ChannelPrivate:
+                                    await Tools.SendChannelPrivateMessage(listModelsMessage, guildId ?? string.Empty,
+                                        msgId);
                                     return true;
                                 default:
                                     return false;
@@ -283,10 +399,13 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, helpMessage, msgId);
+                                    await Tools.SendGroupMessage(helpMessage, contextId.Id, msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, helpMessage, msgId);
+                                    await Tools.SendPrivateMessage(helpMessage, contextId.Id, msgId);
+                                    return true;
+                                case ChatType.ChannelPrivate:
+                                    await Tools.SendChannelPrivateMessage(helpMessage, guildId ?? string.Empty, msgId);
                                     return true;
                                 default:
                                     return false;
@@ -296,10 +415,14 @@ public static class Commands
                             switch (type)
                             {
                                 case ChatType.Group:
-                                    await Tools.SendGroupMessage(contextId.Id, defaultMessage, msgId);
+                                    await Tools.SendGroupMessage(defaultMessage, contextId.Id, msgId);
                                     return true;
                                 case ChatType.Private:
-                                    await Tools.SendPrivateMessage(contextId.Id, defaultMessage, msgId);
+                                    await Tools.SendPrivateMessage(defaultMessage, contextId.Id, msgId);
+                                    return true;
+                                case ChatType.ChannelPrivate:
+                                    await Tools.SendChannelPrivateMessage(defaultMessage, guildId ?? string.Empty,
+                                        msgId);
                                     return true;
                                 default:
                                     return false;
@@ -309,13 +432,17 @@ public static class Commands
             }
             else
             {
+                const string permissionDeniedMessage = "[调试输出] 暂无权限";
                 switch (type)
                 {
                     case ChatType.Group:
-                        await Tools.SendGroupMessage(contextId.Id, "[调试输出] 暂无权限", msgId);
+                        await Tools.SendGroupMessage(permissionDeniedMessage, contextId.Id, msgId);
                         return true;
                     case ChatType.Private:
-                        await Tools.SendPrivateMessage(contextId.Id, "[调试输出] 暂无权限", msgId);
+                        await Tools.SendPrivateMessage(permissionDeniedMessage, contextId.Id, msgId);
+                        return true;
+                    case ChatType.ChannelPrivate:
+                        await Tools.SendChannelPrivateMessage(permissionDeniedMessage, guildId ?? string.Empty, msgId);
                         return true;
                 }
             }
@@ -367,14 +494,11 @@ public static class Commands
             //     return new ContextId(ChatType.Group, privateOpenId);
             //     break;
 
-            
-            // case EventTypeEnum.C2CMessageCreate:
-            //     var privateProcessed = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
-            //     if (privateProcessed == null)
-            //         return null;
-            //     var privateOpenId = privateProcessed.Data.Author.OpenId;
-            //     return new ContextId(ChatType.Group, privateOpenId);
-            //     break;
+            case EventTypeEnum.ChannelPrivateReceive:
+                var channelPrivateProcessed = JsonSerializer.Deserialize<EventPayload<ChannelPrivateReceive>>(body);
+                if (channelPrivateProcessed == null)
+                    return null;
+                return new ContextId(ChatType.ChannelPrivate, channelPrivateProcessed.Data.Author.UnionOpenID);
             default:
                 return null;
                 break;
@@ -405,6 +529,21 @@ public static class Commands
 
             default:
                 return null;
+        }
+    }
+
+    public static string? GetGuildId(this string body)
+    {
+        try
+        {
+            var response = JsonSerializer.Deserialize<EventPayload<ChannelPrivateReceive>>(body);
+            if (EventTypeEnumHelper.ToEventTypeEnum(response?.EventType ?? "") != EventTypeEnum.ChannelPrivateReceive)
+                return null;
+            return response?.Data.GuildId;
+        }
+        catch
+        {
+            return null;
         }
     }
 }

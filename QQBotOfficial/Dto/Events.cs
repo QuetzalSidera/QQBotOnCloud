@@ -137,3 +137,32 @@ public class GroupMessageReceive
     [JsonPropertyName("group_openid")] public string GroupOpenId { get; set; }
     [JsonPropertyName("op_member_openid")] public string OpMemberOpenId { get; set; }
 }
+
+public class ChannelPrivateReceive
+{
+    [JsonPropertyName("id")] public long Id { get; set; }
+    [JsonPropertyName("channel_id")] public string ChannelId { get; set; }
+    [JsonPropertyName("guild_id")] public string GuildId { get; set; }
+    [JsonPropertyName("content")] public string Content { get; set; }
+    [JsonPropertyName("timestamp")] public string Timestamp { get; set; }
+    [JsonPropertyName("author")] public ChannelAuthorDto Author { get; set; }
+    [JsonPropertyName("member")] ChannelMemberDto Member { get; set; }
+    [JsonPropertyName("direct_message")] public bool DirectMessage { get; set; }
+    [JsonPropertyName("seq")] public int Seq { get; set; }
+
+    [JsonPropertyName("seq_in_channel")] public int SeqInChannel { get; set; }
+    [JsonPropertyName("src_guild_id")] public int SrcGuildId { get; set; }
+}
+
+public class ChannelAuthorDto
+{
+    [JsonPropertyName("id")] public string Id { get; set; }
+    [JsonPropertyName("username")] public string Username { get; set; }
+    [JsonPropertyName("avatar")] public string Avatar { get; set; }
+    [JsonPropertyName("union_openid")] public string UnionOpenID { get; set; }
+}
+
+public class ChannelMemberDto
+{
+    [JsonPropertyName("joined_at")] public string JoinedAt { get; set; }
+}

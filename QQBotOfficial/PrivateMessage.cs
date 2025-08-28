@@ -41,12 +41,19 @@ public static class PrivateMessage
             Console.WriteLine(msgId);
             Console.WriteLine("in PrivateMessage Handler 5");
             //如果普通命令没有处理，则交由AI
-            if (!(await Commands.Handler(body, ChatType.Private, msgId)))
+            bool isDebugCommand = await Commands.DebugHandler(body, ChatType.Private, msgId);
+            bool isMessageCommand = await Commands.MessageHandler(openId, message, ChatType.Private, msgId);
+            if(message.Trim().StartsWith("@"+Config.Name))
+                message=message[(Config.Name.Length+1)..];
+            bool isChatCommand = message.Trim().StartsWith(Config.ChatCommand);
+            
+            if (isChatCommand)
+                message = message.Remove(0, Config.ChatCommand.Length);
+            if (isChatCommand || !(isMessageCommand || isDebugCommand))
             {
                 Console.WriteLine("in PrivateMessage Handler 6");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                Console.WriteLine(result);
-                await Tools.SendPrivateMessage(result, openId, eventId, msgId);
+                await Tools.SendPrivateMessage(result, openId, msgId);
             }
 
             Console.WriteLine("in PrivateMessage Handler 7");

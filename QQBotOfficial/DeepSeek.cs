@@ -220,4 +220,5 @@ public enum ChatType
 {
     Group,
     Private,
+    ChannelPrivate,
 }

@@ -37,11 +37,15 @@ public static class GroupMessage
             Console.WriteLine("in GroupAtMessageHandler A4");
             // var eventId = "GROUP_MSG_CREATE";
             //如果普通命令没有处理，则交由AI
-            if (!(await Commands.Handler(body, ChatType.Group, msgId)))
+            bool isDebugCommand = await Commands.DebugHandler(body, ChatType.Group, msgId);
+            bool isMessageCommand = await Commands.MessageHandler(openId, message, ChatType.Group, msgId);
+            bool isChatCommand = message.Trim().StartsWith(Config.ChatCommand);
+            if (isChatCommand)
+                message = message.Remove(0, Config.ChatCommand.Length);
+            if (isChatCommand || !(isMessageCommand || isDebugCommand))
             {
                 Console.WriteLine("in GroupAtMessageHandler A5");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                Console.WriteLine(result);
                 await Tools.SendGroupMessage(result, openId, msgId);
             }
 
@@ -75,7 +79,7 @@ public static class GroupMessage
             //获取用户标识
             var openId = response.Data.GroupOpenId;
             var name = response.Data.OpMemberOpenId;
-            const string message = "你好";
+            string message = "你好";
             var msgId = response.EventId;
 
             var oldTimestamp = _timestampReceive;
@@ -86,11 +90,17 @@ public static class GroupMessage
             Console.WriteLine("in GroupAtMessageHandler B4");
             // var eventId = "GROUP_MSG_RECEIVE";
             //如果普通命令没有处理，则交由AI
-            if (!(await Commands.Handler(body, ChatType.Group, msgId)))
+            bool isDebugCommand = await Commands.DebugHandler(body, ChatType.Group, msgId);
+            bool isMessageCommand = await Commands.MessageHandler(openId, message, ChatType.Group, msgId);
+            if(message.Trim().StartsWith("@"+Config.Name))
+                message=message[(Config.Name.Length+1)..];
+            bool isChatCommand = message.Trim().StartsWith(Config.ChatCommand);
+            if (isChatCommand)
+                message = message.Remove(0, Config.ChatCommand.Length);
+            if (isChatCommand || !(isMessageCommand || isDebugCommand))
             {
                 Console.WriteLine("in GroupAtMessageHandler B5");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                Console.WriteLine(result);
                 await Tools.SendGroupMessage(result, openId, msgId);
             }
 
