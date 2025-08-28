@@ -29,17 +29,18 @@ public static class PrivateMessage
             var name = response.Data.Author.OpenId;
             var message = response.Data.Content;
             var msgId = response.Data.Id;
-            // var eventId = response.EventType;
+            var eventId = response.EventType;
             // var eventId = "C2C_MSG_RECEIVE";
-            // Console.WriteLine(eventId);
+            Console.WriteLine(eventId);
             Console.WriteLine(msgId);
             Console.WriteLine("in PrivateMessage Handler 5");
             //如果普通命令没有处理，则交由AI
-            if (!(await Commands.Handler(body, ChatType.Private)))
+            if (!(await Commands.Handler(body, ChatType.Private, eventId, msgId)))
             {
                 Console.WriteLine("in PrivateMessage Handler 6");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                await Tools.SendPrivateMessage(result, openId);
+                await httpContext.Response.WriteAsync(result);
+                // await Tools.SendPrivateMessage(result, openId, eventId, msgId);
             }
 
             Console.WriteLine("in PrivateMessage Handler 7");
