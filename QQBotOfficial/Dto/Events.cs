@@ -131,7 +131,7 @@ public class AuthorGorupDto
     public string MemberOpenId { get; set; }
 }
 
-public class GroupAtMessageReceive
+public class GroupMessageReceive
 {
     [JsonPropertyName("timestamp")] public long Timestamp { get; set; }
     [JsonPropertyName("group_openid")] public string GroupOpenId { get; set; }

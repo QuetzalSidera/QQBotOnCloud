@@ -334,20 +334,36 @@ public static class Commands
             case EventTypeEnum.GatewayEventName:
                 return null;
                 break;
-            case EventTypeEnum.GroupAtMessageReceive:
-                var groupProcessed = JsonSerializer.Deserialize<EventPayload<GroupAtMessageCreate>>(body);
-                if (groupProcessed == null)
+            case EventTypeEnum.GroupMessageReceive:
+                var groupProcessedA = JsonSerializer.Deserialize<EventPayload<GroupMessageReceive>>(body);
+                if (groupProcessedA == null)
                     return null;
-                var groupOpenId = groupProcessed.Data.GroupOpenId;
-                return new ContextId(ChatType.Group, groupOpenId);
+                var groupOpenIdA = groupProcessedA.Data.GroupOpenId;
+                return new ContextId(ChatType.Group, groupOpenIdA);
+                break;
+            case EventTypeEnum.GroupAtMessageCreate:
+                var groupProcessedB = JsonSerializer.Deserialize<EventPayload<GroupAtMessageCreate>>(body);
+                if (groupProcessedB == null)
+                    return null;
+                var groupOpenIdB = groupProcessedB.Data.GroupOpenId;
+                return new ContextId(ChatType.Group, groupOpenIdB);
                 break;
             case EventTypeEnum.C2CMessageCreate:
-                var privateProcessed = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
-                if (privateProcessed == null)
+                var privateProcessedA = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
+                if (privateProcessedA == null)
                     return null;
-                var privateOpenId = privateProcessed.Data.Author.OpenId;
-                return new ContextId(ChatType.Group, privateOpenId);
+                var privateOpenIdA = privateProcessedA.Data.Author.OpenId;
+                return new ContextId(ChatType.Group, privateOpenIdA);
                 break;
+            // case EventTypeEnum.C2CMessageReceive:
+            //     var privateProcessed = JsonSerializer.Deserialize<EventPayload<PrivateMessage>>(body);
+            //     if (privateProcessed == null)
+            //         return null;
+            //     var privateOpenId = privateProcessed.Data.Author.OpenId;
+            //     return new ContextId(ChatType.Group, privateOpenId);
+            //     break;
+
+            
             // case EventTypeEnum.C2CMessageCreate:
             //     var privateProcessed = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
             //     if (privateProcessed == null)
@@ -371,7 +387,7 @@ public static class Commands
             case EventTypeEnum.GatewayEventName:
                 return null;
 
-            case EventTypeEnum.GroupAtMessageReceive:
+            case EventTypeEnum.GroupMessageReceive:
                 var groupProcessed = JsonSerializer.Deserialize<GroupAtMessageCreate>(body);
                 if (groupProcessed == null)
                     return null;
