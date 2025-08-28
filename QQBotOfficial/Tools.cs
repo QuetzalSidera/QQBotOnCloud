@@ -76,8 +76,11 @@ public static class Tools
             TokenManager.AddAuthHeader(request);
             Console.WriteLine("in SendGroupMessage 2");
         }
-
-        await HttpClientService.Client.SendAsync(request);
+        
+        var res = await HttpClientService.Client.SendAsync(request);
+        Console.WriteLine(res.Content.ReadAsStringAsync().Result);
+        Console.WriteLine("in SendGroupMessage 3");
+        
     }
 
     public class SendGroupMessageParams
