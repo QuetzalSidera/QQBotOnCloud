@@ -83,7 +83,7 @@ public class AttachmentsDto
     public string Url { get; set; }
 }
 
-public class GroupReceiveMessage
+public class GroupAtMessageCreate
 {
     /// <summary>
     /// 平台方消息 ID，可以用于被动消息发送
@@ -129,4 +129,11 @@ public class AuthorGorupDto
     /// </summary>
     [JsonPropertyName("member_openid")]
     public string MemberOpenId { get; set; }
+}
+
+public class GroupAtMessageReceive
+{
+    [JsonPropertyName("timestamp")] public long Timestamp { get; set; }
+    [JsonPropertyName("group_openid")] public string GroupOpenId { get; set; }
+    [JsonPropertyName("op_member_openid")] public string OpMemberOpenId { get; set; }
 }

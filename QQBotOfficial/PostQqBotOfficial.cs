@@ -77,14 +77,15 @@ public class PostQqBotOfficial
             case EventTypeEnum.GatewayEventName:
                 await GatewayEventName.Handler(body, httpContext);
                 break;
-            case EventTypeEnum.GroupAtMessageReceive:
-                await GroupMessage.Handler(body, httpContext);
-                break;
             case EventTypeEnum.C2CMessageReceive:
-                await PrivateMessage.Handler(body, httpContext);
-                break;
             case EventTypeEnum.C2CMessageCreate:
                 await PrivateMessage.Handler(body, httpContext);
+                break;
+            case EventTypeEnum.GroupAtMessageReceive:
+                await GroupMessage.Handler(body, httpContext,EventTypeEnum.GroupAtMessageReceive);
+                break;
+            case EventTypeEnum.GroupAtMessageCreate:
+                await GroupMessage.Handler(body, httpContext,EventTypeEnum.GroupAtMessageCreate);
                 break;
             default:
                 Console.WriteLine($"不支持的事件类型: {response.EventType}");
