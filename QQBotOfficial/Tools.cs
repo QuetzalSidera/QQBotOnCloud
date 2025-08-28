@@ -344,13 +344,20 @@ public static class Commands
                 var groupOpenId = groupProcessed.Data.GroupOpenId;
                 return new ContextId(ChatType.Group, groupOpenId);
                 break;
-            case EventTypeEnum.C2CMessageReceive:
+            case EventTypeEnum.C2CMessageCreate:
                 var privateProcessed = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
                 if (privateProcessed == null)
                     return null;
                 var privateOpenId = privateProcessed.Data.Author.OpenId;
                 return new ContextId(ChatType.Group, privateOpenId);
                 break;
+            // case EventTypeEnum.C2CMessageCreate:
+            //     var privateProcessed = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
+            //     if (privateProcessed == null)
+            //         return null;
+            //     var privateOpenId = privateProcessed.Data.Author.OpenId;
+            //     return new ContextId(ChatType.Group, privateOpenId);
+            //     break;
             default:
                 return null;
                 break;
