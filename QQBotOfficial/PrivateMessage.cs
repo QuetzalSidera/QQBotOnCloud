@@ -29,7 +29,8 @@ public static class PrivateMessage
             var name = response.Data.Author.OpenId;
             var message = response.Data.Content;
             var msgId = response.Data.Id;
-            var eventId = response.EventType;
+            // var eventId = response.EventType;
+            var eventId = "C2C_MSG_RECEIVE";
             Console.WriteLine(eventId);
             Console.WriteLine(msgId);
             Console.WriteLine("in PrivateMessage Handler 5");
