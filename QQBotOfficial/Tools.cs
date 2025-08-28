@@ -250,7 +250,7 @@ public static class Commands
                                         await Tools.SendGroupMessage(contextId.Id, changeModelErrorMessage,eventId,msgId);
                                         return true;
                                     case ChatType.Private:
-                                        await Tools.SendPrivateMessage(contextId.Id, changeModelErrorMessage,eventId,msgId;
+                                        await Tools.SendPrivateMessage(contextId.Id, changeModelErrorMessage,eventId,msgId);
                                         return true;
                                     default:
                                         return false;
