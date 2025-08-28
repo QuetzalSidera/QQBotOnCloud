@@ -35,11 +35,11 @@ public static class PrivateMessage
             Console.WriteLine(msgId);
             Console.WriteLine("in PrivateMessage Handler 5");
             //如果普通命令没有处理，则交由AI
-            if (!(await Commands.Handler(body, ChatType.Private, msgId: msgId)))
+            if (!(await Commands.Handler(body, ChatType.Private)))
             {
                 Console.WriteLine("in PrivateMessage Handler 6");
                 var result = await Models.DeepSeek.SendRequest(id, name, message);
-                await Tools.SendPrivateMessage(result, openId, msgId: msgId);
+                await Tools.SendPrivateMessage(result, openId);
             }
 
             Console.WriteLine("in PrivateMessage Handler 7");
