@@ -23,8 +23,8 @@ public static class Tools
         {
             Content = message,
             MessageType = 0,
-            EventId = eventId??"",
-            MsgId = msgId??"",
+            // EventId = eventId??"",
+            // MsgId = msgId??"",
         });
         request.Content = new StringContent(bodyStr);
         if (TokenManager.AccessToken != string.Empty)
@@ -47,8 +47,8 @@ public static class Tools
         [JsonPropertyName("msg_type")]
         public int MessageType { get; set; }
 
-        [JsonPropertyName("event_id")] public string EventId { get; set; }
-        [JsonPropertyName("msg_id")] public string MsgId { get; set; }
+        // [JsonPropertyName("event_id")] public string EventId { get; set; }
+        // [JsonPropertyName("msg_id")] public string MsgId { get; set; }
 
     }
 
