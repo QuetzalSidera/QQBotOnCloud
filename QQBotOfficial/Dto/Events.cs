@@ -140,7 +140,7 @@ public class GroupMessageReceive
 
 public class ChannelPrivateReceive
 {
-    [JsonPropertyName("id")] public long Id { get; set; }
+    [JsonPropertyName("id")] public string Id { get; set; }
     [JsonPropertyName("channel_id")] public string ChannelId { get; set; }
     [JsonPropertyName("guild_id")] public string GuildId { get; set; }
     [JsonPropertyName("content")] public string Content { get; set; }
