@@ -47,11 +47,11 @@ public static class Tools
     /// 发送私聊消息
     /// </summary>
     /// <param name="message"></param>
-    /// <param name="group_openid">群聊的 openid</param>
-    public static async Task SendGroupMessage(string message, string group_openid)
+    /// <param name="groupOpenId">群聊的 openid</param>
+    public static async Task SendGroupMessage(string message, string groupOpenId)
     {
         Console.WriteLine("in SendGroupMessage 1");
-        string path = $"/v2/groups/{group_openid}/messages";
+        string path = $"/v2/groups/{groupOpenId}/messages";
         var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
         var bodyStr = JsonSerializer.Serialize(new SendGroupMessageParams
         {
