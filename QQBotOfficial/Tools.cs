@@ -337,14 +337,14 @@ public static class Commands
             case EventTypeEnum.GatewayEventName:
                 return null;
                 break;
-            case EventTypeEnum.GroupAtMessageCreate:
+            case EventTypeEnum.GroupAtMessageReceive:
                 var groupProcessed = JsonSerializer.Deserialize<EventPayload<GroupReceiveMessage>>(body);
                 if (groupProcessed == null)
                     return null;
                 var groupOpenId = groupProcessed.Data.GroupOpenId;
                 return new ContextId(ChatType.Group, groupOpenId);
                 break;
-            case EventTypeEnum.C2CMessageCreate:
+            case EventTypeEnum.C2CMessageReceive:
                 var privateProcessed = JsonSerializer.Deserialize<EventPayload<PrivateReceiveMessage>>(body);
                 if (privateProcessed == null)
                     return null;
@@ -367,13 +367,13 @@ public static class Commands
             case EventTypeEnum.GatewayEventName:
                 return null;
 
-            case EventTypeEnum.GroupAtMessageCreate:
+            case EventTypeEnum.GroupAtMessageReceive:
                 var groupProcessed = JsonSerializer.Deserialize<GroupReceiveMessage>(body);
                 if (groupProcessed == null)
                     return null;
                 return groupProcessed.Content;
 
-            case EventTypeEnum.C2CMessageCreate:
+            case EventTypeEnum.C2CMessageReceive:
                 var privateProcessed = JsonSerializer.Deserialize<PrivateReceiveMessage>(body);
                 if (privateProcessed == null)
                     return null;

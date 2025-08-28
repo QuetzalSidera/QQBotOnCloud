@@ -77,10 +77,10 @@ public class PostQqBotOfficial
             case EventTypeEnum.GatewayEventName:
                 await GatewayEventName.Handler(body, httpContext);
                 break;
-            case EventTypeEnum.GroupAtMessageCreate:
+            case EventTypeEnum.GroupAtMessageReceive:
                 await GroupMessage.Handler(body, httpContext);
                 break;
-            case EventTypeEnum.C2CMessageCreate:
+            case EventTypeEnum.C2CMessageReceive:
                 await PrivateMessage.Handler(body, httpContext);
                 break;
             default:
