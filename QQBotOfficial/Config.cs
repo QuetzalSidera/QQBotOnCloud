@@ -1,4 +1,4 @@
-#define Test
+// #define Test
 using Org.BouncyCastle.Asn1.X509;
 
 namespace QQBotOfficial;
