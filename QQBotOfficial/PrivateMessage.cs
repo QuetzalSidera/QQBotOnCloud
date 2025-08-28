@@ -30,6 +30,8 @@ public static class PrivateMessage
             var message = response.Data.Content;
             var msgId = response.Data.Id;
             var eventId = response.EventType;
+            Console.WriteLine(eventId);
+            Console.WriteLine(msgId);
             Console.WriteLine("in PrivateMessage Handler 5");
             //如果普通命令没有处理，则交由AI
             if (!(await Commands.Handler(body, ChatType.Private, eventId, msgId)))
