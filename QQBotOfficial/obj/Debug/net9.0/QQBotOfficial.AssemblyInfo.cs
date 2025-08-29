@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QQBotOfficial")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cda174072a4bf6e58ec20e1eb8d90eb865e0cdee")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff0408e33259559372e9ecc2976b22cce8df4be8")]
 [assembly: System.Reflection.AssemblyProductAttribute("QQBotOfficial")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QQBotOfficial")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

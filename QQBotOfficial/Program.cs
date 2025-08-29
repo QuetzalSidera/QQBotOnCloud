@@ -2,12 +2,21 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using QQBotOfficial;
 
 public class Program
 {
     public static async Task Main(string[] args)
     {
+        _ = Task.Run(async () =>
+        {
+            while (await TokenManager.Timer.WaitForNextTickAsync())
+            {
+                await TokenManager.GetAccessToken();
+            }
+        });
+
         await TokenManager.GetAccessToken();
         Console.WriteLine(TokenManager.AccessToken);
         var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +26,7 @@ public class Program
         builder.WebHost.ConfigureKestrel(options => { options.ListenAnyIP(8443, listenOptions => { }); });
 
         var app = builder.Build();
-        
+
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(

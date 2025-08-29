@@ -18,8 +18,7 @@ public class TokenManager
     public const string BotToken = "YMyBoWQHB5qxoSUkjD8DndZBrHoQq3JV";
     public const string BotSecret = "GoMvU3cBkJtT3dDnNyZAlMxYAmO0cEqS";
 
-
-    private static readonly Timer Time = new Timer( state => GetAccessToken().RunSynchronously(), null, 0, 6000);
+    public static readonly PeriodicTimer Timer = new PeriodicTimer(TimeSpan.FromSeconds(6000));
 
     public static void AddAuthHeader(HttpRequestMessage request)
     {
@@ -52,6 +51,7 @@ public class TokenManager
             Console.WriteLine(rawResponse.Content.ReadAsStringAsync().Result);
             var response = JsonSerializer.Deserialize<AccessTokenDto>(await rawResponse.Content.ReadAsStringAsync());
             AccessToken = response?.AccessToken ?? string.Empty;
+            return;
         }
         catch (Exception e)
         {
