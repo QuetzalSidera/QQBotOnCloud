@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using DeepSeek.Core.Models;
 using QQBotOfficial;
@@ -32,10 +33,26 @@ public static class Tools
             Console.WriteLine("in SendPrivateMessage 2");
             TokenManager.AddAuthHeader(request);
         }
-
-        var res = await HttpClientService.Client.SendAsync(request);
-        Console.WriteLine(res.Content.ReadAsStringAsync().Result);
         Console.WriteLine("in SendPrivateMessage 3");
+        var res = await HttpClientService.Client.SendAsync(request);
+        try
+        {
+            Console.WriteLine("in SendPrivateMessage 4");
+            var jsonResponse = JsonNode.Parse(res.Content.ReadAsStringAsync().Result);
+            if (jsonResponse?["code"] is JsonValue jsonValue && jsonValue.TryGetValue<long>(out var code))
+            {
+                if (code == 11244)
+                {
+                    await TokenManager.GetAccessToken();
+                    Console.WriteLine("in SendPrivateMessage 5");
+                }
+            }
+        }
+        catch
+        {
+            Console.WriteLine("in SendPrivateMessage 6");
+        }
+        Console.WriteLine("in SendPrivateMessage 7");
     }
 
     public class SendPrivateMessageParams
@@ -75,10 +92,26 @@ public static class Tools
             TokenManager.AddAuthHeader(request);
             Console.WriteLine("in SendGroupMessage 2");
         }
-
-        var res = await HttpClientService.Client.SendAsync(request);
-        Console.WriteLine(res.Content.ReadAsStringAsync().Result);
         Console.WriteLine("in SendGroupMessage 3");
+        var res = await HttpClientService.Client.SendAsync(request);
+        try
+        {
+            Console.WriteLine("in SendGroupMessage 4");
+            var jsonResponse = JsonNode.Parse(res.Content.ReadAsStringAsync().Result);
+            if (jsonResponse?["code"] is JsonValue jsonValue && jsonValue.TryGetValue<long>(out var code))
+            {
+                if (code == 11244)
+                {
+                    await TokenManager.GetAccessToken();
+                    Console.WriteLine("in SendGroupMessage 5");
+                }
+            }
+        }
+        catch
+        {
+            Console.WriteLine("in SendGroupMessage 6");
+        }
+        Console.WriteLine("in SendGroupMessage 7");
     }
 
     public class SendGroupMessageParams
@@ -117,10 +150,27 @@ public static class Tools
             TokenManager.AddAuthHeader(request);
             Console.WriteLine("in SendChannelPrivateMessage 2");
         }
-
-        var res = await HttpClientService.Client.SendAsync(request);
-        Console.WriteLine(res.Content.ReadAsStringAsync().Result);
         Console.WriteLine("in SendChannelPrivateMessage 3");
+        var res = await HttpClientService.Client.SendAsync(request);
+        
+        try
+        {
+            Console.WriteLine("in SendChannelPrivateMessage 4");
+            var jsonResponse = JsonNode.Parse(res.Content.ReadAsStringAsync().Result);
+            if (jsonResponse?["code"] is JsonValue jsonValue && jsonValue.TryGetValue<long>(out var code))
+            {
+                if (code == 11244)
+                {
+                    await TokenManager.GetAccessToken();
+                    Console.WriteLine("in SendChannelPrivateMessage 5");
+                }
+            }
+        }
+        catch
+        {
+            Console.WriteLine("in SendChannelPrivateMessage 6");
+        }
+        Console.WriteLine("in SendChannelPrivateMessage 7");
     }
 
 

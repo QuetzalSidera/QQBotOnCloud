@@ -9,16 +9,9 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        _ = Task.Run(async () =>
-        {
-            while (await TokenManager.Timer.WaitForNextTickAsync())
-            {
-                await TokenManager.GetAccessToken();
-            }
-        });
-
         await TokenManager.GetAccessToken();
         Console.WriteLine(TokenManager.AccessToken);
+        
         var builder = WebApplication.CreateBuilder(args);
 
 

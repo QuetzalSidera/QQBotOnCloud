@@ -18,7 +18,15 @@ public class TokenManager
     public const string BotToken = "YMyBoWQHB5qxoSUkjD8DndZBrHoQq3JV";
     public const string BotSecret = "GoMvU3cBkJtT3dDnNyZAlMxYAmO0cEqS";
 
-    public static readonly PeriodicTimer Timer = new PeriodicTimer(TimeSpan.FromSeconds(6000));
+    private Timer _timer = new Timer(TimerTask, null, TimeSpan.Zero,
+        TimeSpan.FromSeconds(7000));
+
+
+    private static void TimerTask(object? state)
+    {
+        var task = GetAccessToken();
+        task.Wait();
+    }
 
     public static void AddAuthHeader(HttpRequestMessage request)
     {
