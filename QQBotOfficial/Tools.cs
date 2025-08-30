@@ -49,15 +49,7 @@ public static class Tools
         try
         {
             Console.WriteLine("in SendPrivateMessage 4");
-            var jsonResponse = JsonNode.Parse(res.Content.ReadAsStringAsync().Result);
-            if (jsonResponse?["code"] is JsonValue jsonValue && jsonValue.TryGetValue<long>(out var code))
-            {
-                if (code == 11244)
-                {
-                    await TokenManager.GetAccessToken();
-                    Console.WriteLine("in SendPrivateMessage 5");
-                }
-            }
+            Console.WriteLine(await res.Content.ReadAsStringAsync());
         }
         catch
         {
@@ -120,22 +112,14 @@ public static class Tools
         try
         {
             Console.WriteLine("in SendGroupMessage 4");
-            var jsonResponse = JsonNode.Parse(res.Content.ReadAsStringAsync().Result);
-            if (jsonResponse?["code"] is JsonValue jsonValue && jsonValue.TryGetValue<long>(out var code))
-            {
-                if (code == 11244)
-                {
-                    await TokenManager.GetAccessToken();
-                    Console.WriteLine("in SendGroupMessage 5");
-                }
-            }
+            Console.WriteLine(await res.Content.ReadAsStringAsync());
         }
         catch
         {
-            Console.WriteLine("in SendGroupMessage 6");
+            Console.WriteLine("in SendGroupMessage 5");
         }
 
-        Console.WriteLine("in SendGroupMessage 7");
+        Console.WriteLine("in SendGroupMessage 6");
     }
 
     public class SendGroupMessageParams
@@ -185,29 +169,21 @@ public static class Tools
             Console.WriteLine("in SendChannelPrivateMessage 2");
         }
 
-        // Console.WriteLine("in SendChannelPrivateMessage 3");
-        // var res = await HttpClientService.Client.SendAsync(request);
-        //
-        // try
-        // {
-        //     Console.WriteLine("in SendChannelPrivateMessage 4");
-        //     var jsonResponse = JsonNode.Parse(res.Content.ReadAsStringAsync().Result);
-        //     if (jsonResponse?["code"] is JsonValue jsonValue && jsonValue.TryGetValue<long>(out var code))
-        //     {
-        //         if (code == 11244)
-        //         {
-        //             await TokenManager.GetAccessToken();
-        //             await HttpClientService.Client.SendAsync(request);
-        //             Console.WriteLine("in SendChannelPrivateMessage 5");
-        //         }
-        //     }
-        // }
-        // catch
-        // {
-        //     Console.WriteLine("in SendChannelPrivateMessage 6");
-        // }
+        Console.WriteLine("in SendChannelPrivateMessage 3");
+        var res = await HttpClientService.Client.SendAsync(request);
 
-        Console.WriteLine("in SendChannelPrivateMessage 7");
+
+        try
+        {
+            Console.WriteLine("in SendChannelPrivateMessage 4");
+            Console.WriteLine(await res.Content.ReadAsStringAsync());
+        }
+        catch
+        {
+            Console.WriteLine("in SendChannelPrivateMessage 5");
+        }
+
+        Console.WriteLine("in SendChannelPrivateMessage 6");
     }
 
 
