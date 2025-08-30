@@ -18,6 +18,16 @@ public static class Tools
     /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
     public static async Task SendPrivateMessage(string message, string openId, string msgId)
     {
+        Console.WriteLine("in SendPrivateMessage 0");
+        try
+        {
+            await TokenManager.GetAccessToken();
+        }
+        catch
+        {
+            Console.WriteLine("get access token failed");
+        }
+
         Console.WriteLine("in SendPrivateMessage 1");
         string path = $"/v2/users/{openId}/messages";
         var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
@@ -33,6 +43,7 @@ public static class Tools
             Console.WriteLine("in SendPrivateMessage 2");
             TokenManager.AddAuthHeader(request);
         }
+
         Console.WriteLine("in SendPrivateMessage 3");
         var res = await HttpClientService.Client.SendAsync(request);
         try
@@ -52,6 +63,7 @@ public static class Tools
         {
             Console.WriteLine("in SendPrivateMessage 6");
         }
+
         Console.WriteLine("in SendPrivateMessage 7");
     }
 
@@ -77,6 +89,16 @@ public static class Tools
     /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
     public static async Task SendGroupMessage(string message, string groupOpenId, string msgId)
     {
+        Console.WriteLine("in SendGroupMessage 0");
+        try
+        {
+            await TokenManager.GetAccessToken();
+        }
+        catch
+        {
+            Console.WriteLine("get access token failed");
+        }
+
         Console.WriteLine("in SendGroupMessage 1");
         string path = $"/v2/groups/{groupOpenId}/messages";
         var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
@@ -92,6 +114,7 @@ public static class Tools
             TokenManager.AddAuthHeader(request);
             Console.WriteLine("in SendGroupMessage 2");
         }
+
         Console.WriteLine("in SendGroupMessage 3");
         var res = await HttpClientService.Client.SendAsync(request);
         try
@@ -111,6 +134,7 @@ public static class Tools
         {
             Console.WriteLine("in SendGroupMessage 6");
         }
+
         Console.WriteLine("in SendGroupMessage 7");
     }
 
@@ -136,6 +160,16 @@ public static class Tools
     /// <param name="msgId">前置收到的用户发送过来的消息 ID，用于发送被动消息（回复）</param>
     public static async Task SendChannelPrivateMessage(string message, string guildId, string msgId)
     {
+        Console.WriteLine("in SendChannelPrivateMessage 0");
+        try
+        {
+            await TokenManager.GetAccessToken();
+        }
+        catch
+        {
+            Console.WriteLine("get access token failed");
+        }
+
         Console.WriteLine("in SendChannelPrivateMessage 1");
         string path = $"/dms/{guildId}/messages";
         var request = new HttpRequestMessage(HttpMethod.Post, Config.BaseUrl + path);
@@ -150,26 +184,29 @@ public static class Tools
             TokenManager.AddAuthHeader(request);
             Console.WriteLine("in SendChannelPrivateMessage 2");
         }
-        Console.WriteLine("in SendChannelPrivateMessage 3");
-        var res = await HttpClientService.Client.SendAsync(request);
-        
-        try
-        {
-            Console.WriteLine("in SendChannelPrivateMessage 4");
-            var jsonResponse = JsonNode.Parse(res.Content.ReadAsStringAsync().Result);
-            if (jsonResponse?["code"] is JsonValue jsonValue && jsonValue.TryGetValue<long>(out var code))
-            {
-                if (code == 11244)
-                {
-                    await TokenManager.GetAccessToken();
-                    Console.WriteLine("in SendChannelPrivateMessage 5");
-                }
-            }
-        }
-        catch
-        {
-            Console.WriteLine("in SendChannelPrivateMessage 6");
-        }
+
+        // Console.WriteLine("in SendChannelPrivateMessage 3");
+        // var res = await HttpClientService.Client.SendAsync(request);
+        //
+        // try
+        // {
+        //     Console.WriteLine("in SendChannelPrivateMessage 4");
+        //     var jsonResponse = JsonNode.Parse(res.Content.ReadAsStringAsync().Result);
+        //     if (jsonResponse?["code"] is JsonValue jsonValue && jsonValue.TryGetValue<long>(out var code))
+        //     {
+        //         if (code == 11244)
+        //         {
+        //             await TokenManager.GetAccessToken();
+        //             await HttpClientService.Client.SendAsync(request);
+        //             Console.WriteLine("in SendChannelPrivateMessage 5");
+        //         }
+        //     }
+        // }
+        // catch
+        // {
+        //     Console.WriteLine("in SendChannelPrivateMessage 6");
+        // }
+
         Console.WriteLine("in SendChannelPrivateMessage 7");
     }
 
